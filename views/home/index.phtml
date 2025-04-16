@@ -1,0 +1,39 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Borrow My Charger</h1>
+    <p class="lead">Find and book electric vehicle charging points in your area.</p>
+    <hr class="my-4">
+    <p>Homeowners can rent out their charging points to EV owners.</p>
+    <a class="btn btn-primary btn-lg" href="chargepoints.php" role="button">Find Chargers</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">For EV Owners</h5>
+                <p class="card-text">Search for available charging points in your area and book them for your electric vehicle.</p>
+                <a href="register.php" class="btn btn-outline-primary">Register as User</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">For Homeowners</h5>
+                <p class="card-text">Rent out your charging point and earn money when it's not in use.</p>
+                <a href="register.php" class="btn btn-outline-success">Register as Homeowner</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Latest Charge Points</h3>
+        <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

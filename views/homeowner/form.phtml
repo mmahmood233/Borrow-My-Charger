@@ -1,0 +1,54 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<h2>Add/Edit Charge Point</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form action="homeowner-form-process.php" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" class="form-control" value="5 The Cresent, Salford, M5 4WT" required>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="latitude">Latitude:</label>
+                        <input type="text" id="latitude" name="latitude" class="form-control" value="53.483710" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="longitude">Longitude:</label>
+                        <input type="text" id="longitude" name="longitude" class="form-control" value="-2.270110" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price per kWh (£):</label>
+                <input type="number" id="price" name="price" class="form-control" step="0.01" min="0" value="0.25" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="availability">Availability:</label>
+                <select id="availability" name="availability" class="form-control">
+                    <option value="1" selected>Available</option>
+                    <option value="0">Not Available</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="image">Charge Point Image:</label>
+                <input type="file" id="image" name="image" class="form-control-file">
+            </div>
+            
+            <div id="map" style="height: 300px; width: 100%; margin-bottom: 20px;"></div>
+            
+            <button type="submit" name="chargepoint_submit" class="btn btn-primary">Save Charge Point</button>
+            <a href="homeowner-dashboard.php" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

@@ -1,0 +1,47 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<h2>My Bookings</h2>
+<p>Manage your charge point bookings</p>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>My Booking Requests</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Address</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Owner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>5 The Cresent, Salford, M5 4WT</td>
+                        <td>2025-04-15</td>
+                        <td>14:30</td>
+                        <td>£0.25/kWh</td>
+                        <td><span class="badge badge-warning">Pending</span></td>
+                        <td>Lee Griffiths</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Find New Charge Points</h5>
+    </div>
+    <div class="card-body">
+        <a href="chargepoints.php" class="btn btn-primary">Search Charge Points</a>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

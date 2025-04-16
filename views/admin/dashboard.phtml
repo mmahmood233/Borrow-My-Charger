@@ -1,0 +1,70 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<h2>Admin Dashboard</h2>
+<p>Manage charge points and users</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>System Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body text-center">
+                                <h3>3</h3>
+                                <p class="text-muted">Total Users</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body text-center">
+                                <h3>1</h3>
+                                <p class="text-muted">Charge Points</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body text-center">
+                                <h3>0</h3>
+                                <p class="text-muted">Total Bookings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3>0</h3>
+                                <p class="text-muted">Pending Bookings</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>SQL Query Tool</h5>
+            </div>
+            <div class="card-body">
+                <form action="admin-query.php" method="POST">
+                    <div class="form-group">
+                        <label for="sql_query">Enter SQL Query:</label>
+                        <textarea id="sql_query" name="sql_query" class="form-control" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" name="query_submit" class="btn btn-primary">Execute Query</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

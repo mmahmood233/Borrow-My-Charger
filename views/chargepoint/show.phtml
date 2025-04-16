@@ -1,0 +1,50 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2>Charge Point Details</h2>
+                <p class="lead">Price: £0.25 per kWh</p>
+                
+                <!-- Google Map placeholder -->
+                <div id="map" style="height: 300px; width: 100%; margin-bottom: 20px;"></div>
+                
+                <p>Owner: Lee Griffiths</p>
+                <p>Availability: Available</p>
+            </div>
+        </div>
+        
+        <!-- Booking form -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Book This Charge Point</h5>
+            </div>
+            <div class="card-body">
+                <form action="booking-process.php" method="POST">
+                    <input type="hidden" name="charge_point_id" value="1">
+                    <div class="form-group">
+                        <label for="booking_date">Date:</label>
+                        <input type="date" id="booking_date" name="booking_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking_time">Time:</label>
+                        <input type="time" id="booking_time" name="booking_time" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message to Homeowner:</label>
+                        <textarea id="message" name="message" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" name="booking_submit" class="btn btn-success">Send Booking Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <img src="public/images/default-charger.jpg" class="card-img-top" alt="Charge Point Image">
+        </div>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

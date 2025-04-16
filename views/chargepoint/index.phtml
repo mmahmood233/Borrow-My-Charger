@@ -1,0 +1,62 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Search Filters</h5>
+            </div>
+            <div class="card-body">
+                <form action="chargepoints.php" method="POST">
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input type="text" id="location" name="location" class="form-control" placeholder="Enter postcode or address">
+                    </div>
+                    <div class="form-group">
+                        <label for="min_price">Minimum Price (£/kWh):</label>
+                        <input type="number" id="min_price" name="min_price" class="form-control" placeholder="Min" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="max_price">Maximum Price (£/kWh):</label>
+                        <input type="number" id="max_price" name="max_price" class="form-control" placeholder="Max" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="availability">Availability:</label>
+                        <select id="availability" name="availability" class="form-control">
+                            <option value="">Any</option>
+                            <option value="1">Available Now</option>
+                        </select>
+                    </div>
+                    <button type="submit" name="search_submit" class="btn btn-primary btn-block">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5>Search Results</h5>
+            </div>
+            <div class="card-body">
+                <div id="results-list">
+                    <!-- Sample charge point -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">5 The Cresent, Salford</h5>
+                            <p class="card-text">£0.25 per kWh</p>
+                            <a href="chargepoint.php?id=1" class="btn btn-sm btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body p-0">
+                <!-- Google Map placeholder -->
+                <div id="map" style="height: 600px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>
