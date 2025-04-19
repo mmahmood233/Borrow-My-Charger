@@ -14,15 +14,10 @@ $password = ""; //same here
 try {
     $conn = new PDO("mysql:host=$serverName;dbname=$database;charset=utf8mb4", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    echo "Connected to MySQL database successfully!<br>";
-
-    $stmt = $conn->query("SELECT id, name, email, role FROM users LIMIT 5");
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        echo "<pre>";
-        print_r($row);
-        echo "</pre>";
-    }
+    
+    // Debug connection message - comment out in production
+    // echo "Connected to MySQL database successfully!<br>";
+    
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }

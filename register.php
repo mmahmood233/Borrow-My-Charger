@@ -1,10 +1,6 @@
 <?php
 $view = new stdClass();
 $view->pageTitle = "Register";
-require_once("views/users/register.phtml");
-?><?php
-$view = new stdClass();
-$view->pageTitle = "Register";
 
 require_once("databaseConn.php");
 require_once("models/User.php");
