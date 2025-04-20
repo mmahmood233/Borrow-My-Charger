@@ -1,46 +1,65 @@
 <?php include 'views/includes/header.phtml'; ?>
 
-<h2>My Bookings</h2>
-<p>Manage your charge point bookings</p>
-
-<div class="card mb-4">
-    <div class="card-header">
-        <h5>My Booking Requests</h5>
+<div class="container mt-4">
+    <h1>Welcome, <?php echo $_SESSION['user_name']; ?></h1>
+    <p>View and manage your charge point bookings below.</p>
+    
+    <div class="mb-3">
+        <a href="chargepoints.php" class="btn btn-success">Find New Charge Points</a>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Address</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Owner</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>5 The Cresent, Salford, M5 4WT</td>
-                        <td>2025-04-15</td>
-                        <td>14:30</td>
-                        <td>£0.25/kWh</td>
-                        <td><span class="badge badge-warning">Pending</span></td>
-                        <td>Lee Griffiths</td>
-                    </tr>
-                </tbody>
-            </table>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>My Bookings</h5>
         </div>
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        <h5>Find New Charge Points</h5>
-    </div>
-    <div class="card-body">
-        <a href="chargepoints.php" class="btn btn-primary">Search Charge Points</a>
+        <div class="card-body">
+            <?php if (count($view->bookings) > 0): ?>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Address</th>
+                                <th>Owner</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($view->bookings as $booking): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($booking['address']); ?></td>
+                                    <td><?php echo htmlspecialchars($booking['owner_name']); ?></td>
+                                    <td><?php echo date('d/m/Y', strtotime($booking['booking_date'])); ?></td>
+                                    <td><?php echo date('H:i', strtotime($booking['booking_time'])); ?></td>
+                                    <td>£<?php echo $booking['price']; ?> per kWh</td>
+                                    <td>
+                                        <?php if ($booking['status'] === 'pending'): ?>
+                                            <span class="badge badge-warning">Pending</span>
+                                        <?php elseif ($booking['status'] === 'approved'): ?>
+                                            <span class="badge badge-success">Approved</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-danger">Declined</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($booking['status'] === 'pending'): ?>
+                                            <a href="cancel-booking.php?id=<?php echo $booking['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</a>
+                                        <?php else: ?>
+                                            <span class="text-muted">No actions available</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p>You don't have any bookings yet.</p>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
 

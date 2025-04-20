@@ -1,0 +1,230 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            
+            <?php if (!empty($view->message)): ?>
+                <?php echo $view->message; ?>
+            <?php endif; ?>
+            
+            <!-- Profile Header - Apple Style -->
+            <div class="bg-white rounded-lg shadow-sm p-5 mb-5" style="border-radius: 20px;">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center text-md-left mb-4 mb-md-0">
+                        <div class="bg-primary text-white d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 120px; height: 120px; font-size: 3rem; border-radius: 60px;">
+                            <?php echo strtoupper(substr($view->user['name'], 0, 1)); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-10 text-center text-md-left">
+                        <h1 style="font-weight: 600; font-size: 2.5rem; letter-spacing: -0.025em;"><?php echo htmlspecialchars($view->user['name']); ?></h1>
+                        <div class="d-flex flex-wrap mt-2">
+                            <span class="mr-4 text-muted" style="font-size: 1.1rem;">
+                                <i class="fas fa-user mr-2 text-primary"></i><?php echo ucfirst($view->user['role']); ?>
+                            </span>
+                            <span class="text-muted" style="font-size: 1.1rem;">
+                                <i class="fas fa-calendar-alt mr-2 text-primary"></i>Member since <?php echo date('d M Y', strtotime($view->user['created_at'])); ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-lg-5 mb-4">
+                    <!-- Profile Information Card -->
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                        <div class="card-body p-4">
+                            <h5 class="mb-4" style="font-weight: 600; letter-spacing: -0.025em;">
+                                <i class="fas fa-user-edit mr-2 text-primary"></i>Profile Information
+                            </h5>
+                            <form method="post" action="profile.php">
+                                <div class="form-group">
+                                    <label for="name" class="font-weight-medium text-dark">Name</label>
+                                    <input type="text" class="form-control form-control-lg border-0 bg-light" style="border-radius: 10px; padding: 12px 15px;" id="name" name="name" value="<?php echo htmlspecialchars($view->user['name']); ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="font-weight-medium text-dark">Email</label>
+                                    <input type="email" class="form-control form-control-lg border-0 bg-light" style="border-radius: 10px; padding: 12px 15px;" id="email" name="email" value="<?php echo htmlspecialchars($view->user['email']); ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="role" class="font-weight-medium text-dark">Role</label>
+                                    <input type="text" class="form-control form-control-lg border-0 bg-light" style="border-radius: 10px; padding: 12px 15px;" id="role" value="<?php echo ucfirst($view->user['role']); ?>" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status" class="font-weight-medium text-dark">Status</label>
+                                    <input type="text" class="form-control form-control-lg border-0 bg-light" style="border-radius: 10px; padding: 12px 15px;" id="status" value="<?php echo ucfirst($view->user['status']); ?>" readonly>
+                                    <?php if ($view->user['status'] === 'pending'): ?>
+                                        <div class="alert alert-warning mt-3" style="border-radius: 10px; border: none;">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                            Your account is pending approval by an administrator.
+                                        </div>
+                                    <?php elseif ($view->user['status'] === 'suspended'): ?>
+                                        <div class="alert alert-danger mt-3" style="border-radius: 10px; border: none;">
+                                            <i class="fas fa-ban mr-2"></i>
+                                            Your account has been suspended. Please contact an administrator.
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <button type="submit" name="update_profile" class="btn btn-primary btn-lg btn-block" style="border-radius: 10px; padding: 12px 15px;">
+                                    Update Profile
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="col-lg-7">
+                    <!-- Password Change Card -->
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                        <div class="card-body p-4">
+                            <h5 class="mb-4" style="font-weight: 600; letter-spacing: -0.025em;">
+                                <i class="fas fa-key mr-2 text-primary"></i>Change Password
+                            </h5>
+                            <form method="post" action="profile.php">
+                                <div class="form-group">
+                                    <label for="current_password" class="font-weight-medium text-dark">Current Password</label>
+                                    <input type="password" class="form-control form-control-lg border-0 bg-light" style="border-radius: 10px; padding: 12px 15px;" id="current_password" name="current_password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new_password" class="font-weight-medium text-dark">New Password</label>
+                                    <input type="password" class="form-control form-control-lg border-0 bg-light" style="border-radius: 10px; padding: 12px 15px;" id="new_password" name="new_password" required>
+                                    <small class="form-text text-muted mt-2">
+                                        Password must be at least 6 characters long.
+                                    </small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm_password" class="font-weight-medium text-dark">Confirm New Password</label>
+                                    <input type="password" class="form-control form-control-lg border-0 bg-light" style="border-radius: 10px; padding: 12px 15px;" id="confirm_password" name="confirm_password" required>
+                                </div>
+                                <button type="submit" name="change_password" class="btn btn-primary btn-lg btn-block" style="border-radius: 10px; padding: 12px 15px;">
+                                    Change Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Links Card -->
+                    <?php if ($view->user['role'] === 'homeowner'): ?>
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                        <div class="card-body p-4">
+                            <h5 class="mb-4" style="font-weight: 600; letter-spacing: -0.025em;">
+                                <i class="fas fa-charging-station mr-2 text-success"></i>Homeowner Quick Links
+                            </h5>
+                            <div class="row justify-content-center">
+                                <div class="col-md-6 mb-3">
+                                    <a href="homeowner-dashboard.php" class="text-decoration-none">
+                                        <div class="bg-light text-center p-4" style="border-radius: 15px;">
+                                            <div class="bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; border-radius: 30px;">
+                                                <i class="fas fa-tachometer-alt fa-lg"></i>
+                                            </div>
+                                            <h6 class="mb-0 font-weight-medium">Dashboard</h6>
+                                            <p class="text-muted small mt-2">Manage your charge points and bookings</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php elseif ($view->user['role'] === 'user'): ?>
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                        <div class="card-body p-4">
+                            <h5 class="mb-4" style="font-weight: 600; letter-spacing: -0.025em;">
+                                <i class="fas fa-bolt mr-2 text-info"></i>User Quick Links
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <a href="user-dashboard.php" class="text-decoration-none">
+                                        <div class="bg-light text-center p-4" style="border-radius: 15px;">
+                                            <div class="bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; border-radius: 30px;">
+                                                <i class="fas fa-tachometer-alt fa-lg"></i>
+                                            </div>
+                                            <h6 class="mb-0 font-weight-medium">Dashboard</h6>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <a href="chargepoints.php" class="text-decoration-none">
+                                        <div class="bg-light text-center p-4" style="border-radius: 15px;">
+                                            <div class="bg-success text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; border-radius: 30px;">
+                                                <i class="fas fa-search fa-lg"></i>
+                                            </div>
+                                            <h6 class="mb-0 font-weight-medium">Find Chargers</h6>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <a href="user-dashboard.php" class="text-decoration-none">
+                                        <div class="bg-light text-center p-4" style="border-radius: 15px;">
+                                            <div class="bg-info text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; border-radius: 30px;">
+                                                <i class="fas fa-history fa-lg"></i>
+                                            </div>
+                                            <h6 class="mb-0 font-weight-medium">My Bookings</h6>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer - Apple Style -->
+<footer class="bg-white py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <h4 style="font-weight: 600; letter-spacing: -0.025em;">
+                    <i class="fas fa-charging-station mr-2 text-primary"></i>Borrow My Charger
+                </h4>
+                <p class="text-muted mb-4">Connect EV owners with homeowners who have charging points. Save money and reduce carbon footprint.</p>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h6 class="text-dark mb-3" style="font-weight: 600; letter-spacing: -0.025em;">Quick Links</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="index.php" class="text-muted">Home</a></li>
+                    <li class="mb-2"><a href="chargepoints.php" class="text-muted">Find Chargers</a></li>
+                    <li class="mb-2"><a href="register.php" class="text-muted">Register</a></li>
+                    <li><a href="login.php" class="text-muted">Login</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                <h6 class="text-dark mb-3" style="font-weight: 600; letter-spacing: -0.025em;">Contact Us</h6>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-2"><i class="fas fa-map-marker-alt mr-2 text-primary"></i>123 EV Street, London, UK</li>
+                    <li class="mb-2"><i class="fas fa-envelope mr-2 text-primary"></i>info@borrowmycharger.com</li>
+                    <li><i class="fas fa-phone mr-2 text-primary"></i>+44 123 456 7890</li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h6 class="text-dark mb-3" style="font-weight: 600; letter-spacing: -0.025em;">Newsletter</h6>
+                <p class="text-muted">Stay updated with our latest news.</p>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control border-0 bg-light" placeholder="Your email" style="border-radius: 10px 0 0 10px; padding: 12px 15px;">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" style="border-radius: 0 10px 10px 0;">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4" style="opacity: 0.1;">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-left mb-2 mb-md-0">
+                <p class="mb-0 text-muted" style="font-size: 0.9rem;">&copy; <?php echo date('Y'); ?> Borrow My Charger. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-right">
+                <a href="#" class="text-muted mr-3" style="font-size: 0.9rem;">Privacy Policy</a>
+                <a href="#" class="text-muted mr-3" style="font-size: 0.9rem;">Terms of Service</a>
+                <a href="#" class="text-muted" style="font-size: 0.9rem;">FAQ</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<?php include 'views/includes/footer.phtml'; ?>

@@ -1,70 +1,385 @@
 <?php include 'views/includes/header.phtml'; ?>
 
-<h2>Admin Dashboard</h2>
-<p>Manage charge points and users</p>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>System Statistics</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card bg-light mb-3">
-                            <div class="card-body text-center">
-                                <h3>3</h3>
-                                <p class="text-muted">Total Users</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-light mb-3">
-                            <div class="card-body text-center">
-                                <h3>1</h3>
-                                <p class="text-muted">Charge Points</p>
-                            </div>
-                        </div>
-                    </div>
+<div class="container mt-4">
+    <h1>Admin Dashboard</h1>
+    <p>Manage users, charge points, and bookings.</p>
+    
+    <!-- Dashboard Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <h2 class="display-4"><?php echo $view->totalUsers; ?></h2>
+                    <p class="card-text">
+                        Admins: <?php echo $view->usersByRole['admin']; ?><br>
+                        Homeowners: <?php echo $view->usersByRole['homeowner']; ?><br>
+                        Users: <?php echo $view->usersByRole['user']; ?>
+                    </p>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card bg-light mb-3">
-                            <div class="card-body text-center">
-                                <h3>0</h3>
-                                <p class="text-muted">Total Bookings</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h3>0</h3>
-                                <p class="text-muted">Pending Bookings</p>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Charge Points</h5>
+                    <h2 class="display-4"><?php echo $view->totalChargePoints; ?></h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Bookings</h5>
+                    <h2 class="display-4"><?php echo $view->totalBookings; ?></h2>
+                    <p class="card-text">
+                        Pending: <?php echo $view->bookingsByStatus['pending']; ?><br>
+                        Approved: <?php echo $view->bookingsByStatus['approved']; ?><br>
+                        Declined: <?php echo $view->bookingsByStatus['declined']; ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">System Status</h5>
+                    <p class="card-text">
+                        <span class="badge badge-success">Online</span><br>
+                        <?php echo date('d/m/Y H:i'); ?>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>SQL Query Tool</h5>
-            </div>
-            <div class="card-body">
-                <form action="admin-query.php" method="POST">
-                    <div class="form-group">
-                        <label for="sql_query">Enter SQL Query:</label>
-                        <textarea id="sql_query" name="sql_query" class="form-control" rows="5" required></textarea>
+    
+    <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab">Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="charge-points-tab" data-toggle="tab" href="#charge-points" role="tab">Charge Points</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="bookings-tab" data-toggle="tab" href="#bookings" role="tab">Bookings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="reports-tab" data-toggle="tab" href="#reports" role="tab">Reports</a>
+        </li>
+    </ul>
+    
+    <div class="tab-content mt-3" id="adminTabContent">
+        <div class="tab-pane fade show active" id="users" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5>User Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($view->users as $user): ?>
+                                    <tr>
+                                        <td><?php echo $user['id']; ?></td>
+                                        <td><?php echo htmlspecialchars($user['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($user['email']); ?></td>
+                                        <td><?php echo $user['role']; ?></td>
+                                        <td>
+                                            <?php if ($user['status'] === 'approved'): ?>
+                                                <span class="badge badge-success">Approved</span>
+                                            <?php elseif ($user['status'] === 'pending'): ?>
+                                                <span class="badge badge-warning">Pending</span>
+                                            <?php else: ?>
+                                                <span class="badge badge-danger">Suspended</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?php echo date('d/m/Y', strtotime($user['created_at'])); ?></td>
+                                        <td>
+                                            <?php if ($user['role'] !== 'admin'): ?>
+                                                <?php if ($user['status'] === 'pending'): ?>
+                                                    <a href="admin-user-action.php?id=<?php echo $user['id']; ?>&action=approve" class="btn btn-sm btn-success">Approve</a>
+                                                <?php endif; ?>
+                                                
+                                                <?php if ($user['status'] !== 'suspended'): ?>
+                                                    <a href="admin-user-action.php?id=<?php echo $user['id']; ?>&action=suspend" class="btn btn-sm btn-warning">Suspend</a>
+                                                <?php else: ?>
+                                                    <a href="admin-user-action.php?id=<?php echo $user['id']; ?>&action=approve" class="btn btn-sm btn-success">Reactivate</a>
+                                                <?php endif; ?>
+                                                
+                                                <a href="admin-user-action.php?id=<?php echo $user['id']; ?>&action=delete" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <button type="submit" name="query_submit" class="btn btn-primary">Execute Query</button>
-                </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="charge-points" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Charge Point Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Owner</th>
+                                    <th>Address</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($view->chargePoints as $chargePoint): ?>
+                                    <tr>
+                                        <td><?php echo $chargePoint['id']; ?></td>
+                                        <td><?php echo htmlspecialchars($chargePoint['owner_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($chargePoint['address']); ?></td>
+                                        <td>£<?php echo $chargePoint['price']; ?> per kWh</td>
+                                        <td>
+                                            <?php if ($chargePoint['availability']): ?>
+                                                <span class="badge badge-success">Available</span>
+                                            <?php else: ?>
+                                                <span class="badge badge-danger">Not Available</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?php echo date('d/m/Y', strtotime($chargePoint['created_at'])); ?></td>
+                                        <td>
+                                            <a href="admin-chargepoint-action.php?id=<?php echo $chargePoint['id']; ?>&action=edit" class="btn btn-sm btn-primary">Edit</a>
+                                            <a href="admin-chargepoint-action.php?id=<?php echo $chargePoint['id']; ?>&action=delete" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this charge point?')">Delete</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="bookings" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Booking Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Charge Point</th>
+                                    <th>Owner</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($view->bookings as $booking): ?>
+                                    <tr>
+                                        <td><?php echo $booking['id']; ?></td>
+                                        <td><?php echo htmlspecialchars($booking['user_name']); ?> (<?php echo htmlspecialchars($booking['user_email']); ?>)</td>
+                                        <td><?php echo htmlspecialchars($booking['address']); ?></td>
+                                        <td><?php echo htmlspecialchars($booking['owner_name']); ?></td>
+                                        <td><?php echo date('d/m/Y', strtotime($booking['booking_date'])); ?></td>
+                                        <td><?php echo date('H:i', strtotime($booking['booking_time'])); ?></td>
+                                        <td>
+                                            <?php if ($booking['status'] === 'pending'): ?>
+                                                <span class="badge badge-warning">Pending</span>
+                                            <?php elseif ($booking['status'] === 'approved'): ?>
+                                                <span class="badge badge-success">Approved</span>
+                                            <?php else: ?>
+                                                <span class="badge badge-danger">Declined</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?php echo date('d/m/Y', strtotime($booking['created_at'])); ?></td>
+                                        <td>
+                                            <?php if ($booking['status'] === 'pending'): ?>
+                                                <a href="admin-booking-action.php?id=<?php echo $booking['id']; ?>&action=approve" class="btn btn-sm btn-success">Approve</a>
+                                                <a href="admin-booking-action.php?id=<?php echo $booking['id']; ?>&action=decline" class="btn btn-sm btn-danger">Decline</a>
+                                            <?php else: ?>
+                                                <a href="admin-booking-action.php?id=<?php echo $booking['id']; ?>&action=delete" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this booking?')">Delete</a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="reports" role="tabpanel">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>User Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>Users by Role</h6>
+                            <div class="progress mb-3" style="height: 30px;">
+                                <?php 
+                                $adminPercent = ($view->usersByRole['admin'] / $view->totalUsers) * 100;
+                                $homeownerPercent = ($view->usersByRole['homeowner'] / $view->totalUsers) * 100;
+                                $userPercent = ($view->usersByRole['user'] / $view->totalUsers) * 100;
+                                ?>
+                                <div class="progress-bar bg-danger" style="width: <?php echo $adminPercent; ?>%" title="Admins: <?php echo $view->usersByRole['admin']; ?>">
+                                    <?php echo $view->usersByRole['admin']; ?> Admins
+                                </div>
+                                <div class="progress-bar bg-warning" style="width: <?php echo $homeownerPercent; ?>%" title="Homeowners: <?php echo $view->usersByRole['homeowner']; ?>">
+                                    <?php echo $view->usersByRole['homeowner']; ?> Homeowners
+                                </div>
+                                <div class="progress-bar bg-success" style="width: <?php echo $userPercent; ?>%" title="Users: <?php echo $view->usersByRole['user']; ?>">
+                                    <?php echo $view->usersByRole['user']; ?> Users
+                                </div>
+                            </div>
+                            
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Total Users:</th>
+                                    <td><?php echo $view->totalUsers; ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Admins:</th>
+                                    <td><?php echo $view->usersByRole['admin']; ?> (<?php echo round($adminPercent, 1); ?>%)</td>
+                                </tr>
+                                <tr>
+                                    <th>Homeowners:</th>
+                                    <td><?php echo $view->usersByRole['homeowner']; ?> (<?php echo round($homeownerPercent, 1); ?>%)</td>
+                                </tr>
+                                <tr>
+                                    <th>Regular Users:</th>
+                                    <td><?php echo $view->usersByRole['user']; ?> (<?php echo round($userPercent, 1); ?>%)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Booking Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>Bookings by Status</h6>
+                            <div class="progress mb-3" style="height: 30px;">
+                                <?php 
+                                $pendingPercent = ($view->bookingsByStatus['pending'] / $view->totalBookings) * 100;
+                                $approvedPercent = ($view->bookingsByStatus['approved'] / $view->totalBookings) * 100;
+                                $declinedPercent = ($view->bookingsByStatus['declined'] / $view->totalBookings) * 100;
+                                ?>
+                                <div class="progress-bar bg-warning" style="width: <?php echo $pendingPercent; ?>%" title="Pending: <?php echo $view->bookingsByStatus['pending']; ?>">
+                                    <?php echo $view->bookingsByStatus['pending']; ?> Pending
+                                </div>
+                                <div class="progress-bar bg-success" style="width: <?php echo $approvedPercent; ?>%" title="Approved: <?php echo $view->bookingsByStatus['approved']; ?>">
+                                    <?php echo $view->bookingsByStatus['approved']; ?> Approved
+                                </div>
+                                <div class="progress-bar bg-danger" style="width: <?php echo $declinedPercent; ?>%" title="Declined: <?php echo $view->bookingsByStatus['declined']; ?>">
+                                    <?php echo $view->bookingsByStatus['declined']; ?> Declined
+                                </div>
+                            </div>
+                            
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Total Bookings:</th>
+                                    <td><?php echo $view->totalBookings; ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Pending:</th>
+                                    <td><?php echo $view->bookingsByStatus['pending']; ?> (<?php echo round($pendingPercent, 1); ?>%)</td>
+                                </tr>
+                                <tr>
+                                    <th>Approved:</th>
+                                    <td><?php echo $view->bookingsByStatus['approved']; ?> (<?php echo round($approvedPercent, 1); ?>%)</td>
+                                </tr>
+                                <tr>
+                                    <th>Declined:</th>
+                                    <td><?php echo $view->bookingsByStatus['declined']; ?> (<?php echo round($declinedPercent, 1); ?>%)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>System Reports</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6>Export Data</h6>
+                                    <p>Download system data in CSV format.</p>
+                                    <a href="admin-export.php?type=users" class="btn btn-sm btn-primary">Export Users</a>
+                                    <a href="admin-export.php?type=chargepoints" class="btn btn-sm btn-success">Export Charge Points</a>
+                                    <a href="admin-export.php?type=bookings" class="btn btn-sm btn-info">Export Bookings</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6>System Information</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <th>PHP Version:</th>
+                                            <td><?php echo phpversion(); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Server:</th>
+                                            <td><?php echo $_SERVER['SERVER_SOFTWARE']; ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Database:</th>
+                                            <td>MySQL</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#adminTabs a').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+    });
+</script>
 
 <?php include 'views/includes/footer.phtml'; ?>

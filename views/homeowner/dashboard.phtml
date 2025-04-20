@@ -1,69 +1,95 @@
 <?php include 'views/includes/header.phtml'; ?>
 
-<h2>My Charge Point</h2>
-<p>Manage your charge point and booking requests</p>
+<div class="container mt-4">
+    <h1>Welcome, <?php echo $_SESSION['user_name']; ?></h1>
+    <p>Manage your charge point below.</p>
 
-<div class="row">
-    <div class="col-md-8">
+    <?php if (isset($view->chargePoint) && $view->chargePoint): ?>
         <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Charge Point Details</h5>
-                <a href="homeowner-form.php" class="btn btn-sm btn-primary">Edit</a>
+            <div class="card-header">
+                <h5>Your Charge Point</h5>
             </div>
             <div class="card-body">
-                <h4>5 The Cresent, Salford, M5 4WT</h4>
-                <p>Price: £0.25 per kWh</p>
-                <p>Status: Available</p>
-                <div id="map" style="height: 300px; width: 100%;"></div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <p><strong>Address:</strong> <?php echo $view->chargePoint['address']; ?></p>
+                        <p><strong>Price:</strong> £<?php echo $view->chargePoint['price']; ?> per kWh</p>
+                        <p><strong>Status:</strong> <?php echo $view->chargePoint['availability'] ? 'Available' : 'Not Available'; ?></p>
+                        <p>
+                            <a href="edit-chargepoint.php?id=<?php echo $view->chargePoint['id']; ?>" class="btn btn-primary">Edit Charge Point</a>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <?php if ($view->chargePoint['image']): ?>
+                            <img src="uploads/<?php echo $view->chargePoint['image']; ?>" class="img-fluid rounded" alt="Charge Point">
+                        <?php else: ?>
+                            <div class="text-center p-4 bg-light rounded">
+                                <p>No image available</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <img src="public/images/default-charger.jpg" class="card-img-top" alt="Charge Point Image">
+    <?php else: ?>
+        <div class="alert alert-info">
+            <p>You haven't added a charge point yet.</p>
+            <a href="add-chargepoint.php" class="btn btn-success">Add Charge Point</a>
         </div>
-    </div>
-</div>
+    <?php endif; ?>
 
-<div class="card">
-    <div class="card-header">
-        <h5>Booking Requests</h5>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Message</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>2025-04-15</td>
-                        <td>14:30</td>
-                        <td>I need to charge my Tesla</td>
-                        <td><span class="badge badge-warning">Pending</span></td>
-                        <td>
-                            <form action="booking-update.php" method="POST" style="display: inline;">
-                                <input type="hidden" name="booking_id" value="1">
-                                <input type="hidden" name="status" value="approved">
-                                <button type="submit" name="approve_submit" class="btn btn-sm btn-success">Approve</button>
-                            </form>
-                            <form action="booking-update.php" method="POST" style="display: inline;">
-                                <input type="hidden" name="booking_id" value="1">
-                                <input type="hidden" name="status" value="declined">
-                                <button type="submit" name="decline_submit" class="btn btn-sm btn-danger">Decline</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="card">
+        <div class="card-header">
+            <h5>Booking Requests</h5>
+        </div>
+        <div class="card-body">
+            <?php if (empty($view->bookings)): ?>
+                <p>No booking requests yet.</p>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($view->bookings as $booking): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($booking['user_name']); ?> (<?php echo htmlspecialchars($booking['user_email']); ?>)</td>
+                                    <td><?php echo date('d/m/Y', strtotime($booking['booking_date'])); ?></td>
+                                    <td><?php echo date('H:i', strtotime($booking['booking_time'])); ?></td>
+                                    <td><?php echo htmlspecialchars($booking['message'] ?: 'No message'); ?></td>
+                                    <td>
+                                        <?php if ($booking['status'] === 'pending'): ?>
+                                            <span class="badge badge-warning">Pending</span>
+                                        <?php elseif ($booking['status'] === 'approved'): ?>
+                                            <span class="badge badge-success">Approved</span>
+                                        <?php elseif ($booking['status'] === 'declined'): ?>
+                                            <span class="badge badge-danger">Declined</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($booking['status'] === 'pending'): ?>
+                                            <div class="btn-group" role="group">
+                                                <a href="booking-action.php?id=<?php echo $booking['id']; ?>&action=approve" class="btn btn-sm btn-success">Approve</a>
+                                                <a href="booking-action.php?id=<?php echo $booking['id']; ?>&action=decline" class="btn btn-sm btn-danger">Decline</a>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="text-muted">No actions available</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

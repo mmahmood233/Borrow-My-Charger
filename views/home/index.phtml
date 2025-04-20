@@ -1,39 +1,264 @@
 <?php include 'views/includes/header.phtml'; ?>
 
-<div class="jumbotron">
-    <h1 class="display-4">Welcome to Borrow My Charger</h1>
-    <p class="lead">Find and book electric vehicle charging points in your area.</p>
-    <hr class="my-4">
-    <p>Homeowners can rent out their charging points to EV owners.</p>
-    <a class="btn btn-primary btn-lg" href="chargepoints.php" role="button">Find Chargers</a>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">For EV Owners</h5>
-                <p class="card-text">Search for available charging points in your area and book them for your electric vehicle.</p>
-                <a href="register.php" class="btn btn-outline-primary">Register as User</a>
-            </div>
+<!-- Hero Section - Apple Style -->
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+            <h1 style="font-weight: 600; font-size: 3.5rem; letter-spacing: -0.025em; line-height: 1.1;">Welcome to Borrow My Charger</h1>
+            <p class="text-muted mt-4 mb-4" style="font-size: 1.25rem; font-weight: 400;">Find and book electric vehicle charging points in your area.</p>
+            <p class="text-muted mb-4">Homeowners can rent out their charging points to EV owners.</p>
+            <a class="btn btn-primary btn-lg px-4" href="chargepoints.php" style="border-radius: 10px;">Find Chargers</a>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">For Homeowners</h5>
-                <p class="card-text">Rent out your charging point and earn money when it's not in use.</p>
-                <a href="register.php" class="btn btn-outline-success">Register as Homeowner</a>
-            </div>
+        <div class="col-lg-6">
+            <img src="images/car.jpg" alt="EV Charging" class="img-fluid rounded-lg shadow-sm" style="border-radius: 20px;">
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <h3>Latest Charge Points</h3>
-        <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+<!-- Features Section -->
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h2 style="font-weight: 600; letter-spacing: -0.025em;">How It Works</h2>
+            <p class="text-muted">Simple steps to start using our platform</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-body p-4 text-center">
+                    <div class="bg-primary text-white d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; border-radius: 35px;">
+                        <i class="fas fa-search fa-2x"></i>
+                    </div>
+                    <h5 style="font-weight: 600; letter-spacing: -0.025em;">Find a Charger</h5>
+                    <p class="text-muted">Search for available charging points in your area based on location and price.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-body p-4 text-center">
+                    <div class="bg-success text-white d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; border-radius: 35px;">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <h5 style="font-weight: 600; letter-spacing: -0.025em;">Book Your Slot</h5>
+                    <p class="text-muted">Reserve a charging slot that fits your schedule with just a few clicks.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-body p-4 text-center">
+                    <div class="bg-info text-white d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; border-radius: 35px;">
+                        <i class="fas fa-charging-station fa-2x"></i>
+                    </div>
+                    <h5 style="font-weight: 600; letter-spacing: -0.025em;">Charge Your EV</h5>
+                    <p class="text-muted">Arrive at the location and charge your vehicle hassle-free.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- User Types Section -->
+<div class="container mt-5 pt-3">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary text-white d-inline-flex align-items-center justify-content-center mr-3" style="width: 50px; height: 50px; border-radius: 25px;">
+                            <i class="fas fa-car fa-lg"></i>
+                        </div>
+                        <h4 style="font-weight: 600; letter-spacing: -0.025em; margin-bottom: 0;">For EV Owners</h4>
+                    </div>
+                    <p class="text-muted">Search for available charging points in your area and book them for your electric vehicle.</p>
+                    <ul class="text-muted mb-4">
+                        <li class="mb-2">Find chargers near you</li>
+                        <li class="mb-2">Book in advance</li>
+                        <li>Pay securely online</li>
+                    </ul>
+                    <a href="register.php" class="btn btn-outline-primary" style="border-radius: 10px;">Register as User</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-success text-white d-inline-flex align-items-center justify-content-center mr-3" style="width: 50px; height: 50px; border-radius: 25px;">
+                            <i class="fas fa-home fa-lg"></i>
+                        </div>
+                        <h4 style="font-weight: 600; letter-spacing: -0.025em; margin-bottom: 0;">For Homeowners</h4>
+                    </div>
+                    <p class="text-muted">Rent out your charging point and earn money when it's not in use.</p>
+                    <ul class="text-muted mb-4">
+                        <li class="mb-2">List your charger</li>
+                        <li class="mb-2">Set your own price</li>
+                        <li>Receive bookings</li>
+                    </ul>
+                    <a href="register.php" class="btn btn-outline-success" style="border-radius: 10px;">Register as Homeowner</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Latest Charge Points Section -->
+<div class="container mt-5 pt-3">
+    <div class="row">
+        <div class="col-12">
+            <h2 style="font-weight: 600; letter-spacing: -0.025em;">Latest Charge Points</h2>
+            <p class="text-muted mb-4">Recently added charging points available for booking</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <?php if (isset($view->latestChargePoints) && !empty($view->latestChargePoints)): ?>
+            <?php foreach ($view->latestChargePoints as $chargePoint): ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; overflow: hidden;">
+                        <?php if (!empty($chargePoint['image'])): ?>
+                            <img src="uploads/<?php echo htmlspecialchars($chargePoint['image']); ?>" class="card-img-top" alt="Charge Point" style="height: 200px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x200?text=Charge+Point';this.onerror='';">
+                        <?php else: ?>
+                            <img src="https://via.placeholder.com/300x200?text=Charge+Point" class="card-img-top" alt="Charge Point" style="height: 200px; object-fit: cover;">
+                        <?php endif; ?>
+                        <div class="card-body p-4">
+                            <h5 class="card-title" style="font-weight: 600; letter-spacing: -0.025em;"><?php echo htmlspecialchars($chargePoint['address']); ?></h5>
+                            <p class="card-text text-muted">
+                                <i class="fas fa-user text-primary mr-2"></i><?php echo htmlspecialchars($chargePoint['owner_name']); ?>
+                            </p>
+                            <p class="card-text text-muted">
+                                <i class="fas fa-tag text-success mr-2"></i>£<?php echo number_format($chargePoint['price'], 2); ?> per hour
+                            </p>
+                            <a href="chargepoint.php?id=<?php echo $chargePoint['id']; ?>" class="btn btn-primary" style="border-radius: 10px;">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-12">
+                <div class="alert alert-info" style="border-radius: 10px; border: none;">
+                    <i class="fas fa-info-circle mr-2"></i>No charge points available at the moment. Check back soon!
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-12 text-center">
+            <a href="chargepoints.php" class="btn btn-outline-primary" style="border-radius: 10px;">View All Charge Points</a>
+        </div>
+    </div>
+</div>
+
+<!-- Map Section -->
+<div class="container mt-5 pt-3 mb-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 style="font-weight: 600; letter-spacing: -0.025em;">Find Chargers Near You</h2>
+            <p class="text-muted mb-4">Explore charging points on the map</p>
+            <div id="map" style="height: 400px; width: 100%; border-radius: 20px;" class="shadow-sm"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Google Maps Script -->
+<script>
+function initMap() {
+    // Default map center (London)
+    var center = {lat: 51.5074, lng: -0.1278};
+    
+    // Create map
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: center,
+        styles: [
+            {
+                "featureType": "administrative",
+                "elementType": "all",
+                "stylers": [{"saturation": "-100"}]
+            },
+            {
+                "featureType": "administrative.province",
+                "elementType": "all",
+                "stylers": [{"visibility": "off"}]
+            },
+            {
+                "featureType": "landscape",
+                "elementType": "all",
+                "stylers": [{"saturation": -100}, {"lightness": 65}, {"visibility": "on"}]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "all",
+                "stylers": [{"saturation": -100}, {"lightness": "50"}, {"visibility": "simplified"}]
+            },
+            {
+                "featureType": "road",
+                "elementType": "all",
+                "stylers": [{"saturation": "-100"}]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "all",
+                "stylers": [{"visibility": "simplified"}]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "all",
+                "stylers": [{"lightness": "30"}]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "all",
+                "stylers": [{"lightness": "40"}]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "all",
+                "stylers": [{"saturation": -100}, {"visibility": "simplified"}]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{"hue": "#ffff00"}, {"lightness": -25}, {"saturation": -97}]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels",
+                "stylers": [{"lightness": -25}, {"saturation": -100}]
+            }
+        ]
+    });
+
+    // Add markers for charge points if they exist
+    <?php if (isset($view->latestChargePoints) && !empty($view->latestChargePoints)): ?>
+        <?php foreach ($view->latestChargePoints as $chargePoint): ?>
+            <?php if (!empty($chargePoint['latitude']) && !empty($chargePoint['longitude'])): ?>
+                var marker = new google.maps.Marker({
+                    position: {lat: <?php echo $chargePoint['latitude']; ?>, lng: <?php echo $chargePoint['longitude']; ?>},
+                    map: map,
+                    title: '<?php echo htmlspecialchars($chargePoint['address']); ?>',
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                    }
+                });
+                
+                var infoWindow = new google.maps.InfoWindow({
+                    content: '<div style="width: 200px;"><h6 style="margin-bottom: 5px;"><?php echo htmlspecialchars($chargePoint['address']); ?></h6>' +
+                             '<p style="margin-bottom: 5px;"><strong>Price:</strong> £<?php echo number_format($chargePoint['price'], 2); ?> per hour</p>' +
+                             '<a href="chargepoint.php?id=<?php echo $chargePoint['id']; ?>" class="btn btn-sm btn-primary">View Details</a></div>'
+                });
+                
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker);
+                });
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+}
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 
 <?php include 'views/includes/footer.phtml'; ?>

@@ -1,0 +1,159 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="container mt-4">
+    <h1>Book Charge Point</h1>
+    
+    <?php if (!empty($view->error)): ?>
+        <div class="alert alert-danger"><?php echo $view->error; ?></div>
+    <?php endif; ?>
+    
+    <?php if (!empty($view->success)): ?>
+        <div class="alert alert-success"><?php echo $view->success; ?></div>
+    <?php endif; ?>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Charge Point Details</h5>
+                </div>
+                <div class="card-body">
+                    <h6><?php echo htmlspecialchars($view->chargePoint['address']); ?></h6>
+                    <p><strong>Price:</strong> £<?php echo $view->chargePoint['price']; ?> per kWh</p>
+                    
+                    <?php if ($view->chargePoint['image']): ?>
+                        <img src="uploads/<?php echo $view->chargePoint['image']; ?>" class="img-fluid rounded mb-3" alt="Charge Point">
+                    <?php endif; ?>
+                    
+                    <div id="map" style="height: 300px; width: 100%; background-color: #eee;">
+                        <div class="text-center p-5">
+                            <p>Map will be displayed here when API key is configured.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Booking Form</h5>
+                </div>
+                <div class="card-body">
+                    <?php if (empty($view->success)): ?>
+                        <form action="book-chargepoint.php?id=<?php echo $view->chargePoint['id']; ?>" method="POST">
+                            <div class="form-group">
+                                <label for="booking_date">Date:</label>
+                                <input type="date" id="booking_date" name="booking_date" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="booking_time">Time:</label>
+                                <input type="time" id="booking_time" name="booking_time" class="form-control" required>
+                                <small class="text-muted">Choose a time between 6:00 AM and 10:00 PM</small>
+                            </div>
+                            
+                            <div id="availability-info" class="mt-3 mb-3" style="display: none;">
+                                <h6>Availability for selected date:</h6>
+                                <div id="availability-slots" class="d-flex flex-wrap">
+                                    <!-- Time slots will be populated here -->
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge badge-success mr-2">Available</span>
+                                    <span class="badge badge-warning mr-2">Pending</span>
+                                    <span class="badge badge-danger">Booked</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message to Homeowner (optional):</label>
+                                <textarea id="message" name="message" class="form-control" rows="4" placeholder="Describe your vehicle, charging needs, etc."></textarea>
+                            </div>
+                            
+                            <button type="submit" name="book_submit" class="btn btn-primary">Submit Booking Request</button>
+                            <a href="chargepoints.php" class="btn btn-secondary">Back to Charge Points</a>
+                        </form>
+                    <?php else: ?>
+                        <a href="user-dashboard.php" class="btn btn-primary">View My Bookings</a>
+                        <a href="chargepoints.php" class="btn btn-secondary">Find More Charge Points</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // When date is selected, check availability
+    $('#booking_date').on('change', function() {
+        var selectedDate = $(this).val();
+        if (selectedDate) {
+            checkAvailability(selectedDate);
+        } else {
+            $('#availability-info').hide();
+        }
+    });
+    
+    function checkAvailability(date) {
+        $.ajax({
+            url: 'check-availability.php',
+            type: 'GET',
+            data: {
+                charge_point_id: <?php echo $view->chargePoint['id']; ?>,
+                date: date
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.error) {
+                    console.error(data.error);
+                    return;
+                }
+                
+                // Show availability info
+                $('#availability-info').show();
+                
+                // Clear previous slots
+                $('#availability-slots').empty();
+                
+                // Create time slots from 6 AM to 10 PM
+                var bookedTimes = {};
+                
+                // Mark booked and pending times
+                if (data.bookings) {
+                    data.bookings.forEach(function(booking) {
+                        bookedTimes[booking.booking_time] = booking.status;
+                    });
+                }
+                
+                // Generate time slots
+                for (var hour = 6; hour <= 22; hour++) {
+                    var timeStr = (hour < 10 ? '0' + hour : hour) + ':00';
+                    var status = bookedTimes[timeStr] || 'available';
+                    
+                    var badgeClass = 'badge-success';
+                    if (status === 'pending') {
+                        badgeClass = 'badge-warning';
+                    } else if (status === 'approved') {
+                        badgeClass = 'badge-danger';
+                    }
+                    
+                    var slot = $('<div class="time-slot m-1">').append(
+                        $('<span class="badge ' + badgeClass + ' p-2">').text(
+                            (hour > 12 ? (hour - 12) : hour) + 
+                            (hour >= 12 ? ' PM' : ' AM')
+                        )
+                    );
+                    
+                    $('#availability-slots').append(slot);
+                }
+            },
+            error: function() {
+                console.error('Error checking availability');
+            }
+        });
+    }
+});
+</script>
+
+<?php include 'views/includes/footer.phtml'; ?>

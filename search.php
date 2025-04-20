@@ -1,7 +1,6 @@
 <?php
-session_start();
-$view = new stdClass();
-$view->pageTitle = "Find Charge Points";
+// This file handles AJAX requests for charge point searches
+header('Content-Type: application/json');
 
 require_once("databaseConn.php");
 require_once("models/ChargePoint.php");
@@ -14,7 +13,8 @@ $minPrice = isset($_GET['min_price']) && is_numeric($_GET['min_price']) ? $_GET[
 $maxPrice = isset($_GET['max_price']) && is_numeric($_GET['max_price']) ? $_GET['max_price'] : null;
 
 // Get charge points based on search criteria
-$view->chargePoints = $chargePointModel->search($keyword, $minPrice, $maxPrice);
+$chargePoints = $chargePointModel->search($keyword, $minPrice, $maxPrice);
 
-require_once("views/chargepoint/list.phtml");
+// Return results as JSON
+echo json_encode($chargePoints);
 ?>

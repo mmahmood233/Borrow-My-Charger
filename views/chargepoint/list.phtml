@@ -1,0 +1,158 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="container mt-4">
+    <h1>Find Charge Points</h1>
+    <p>Search for available charge points near you.</p>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="searchForm" class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="keyword">Search by location or owner:</label>
+                        <input type="text" id="keyword" name="keyword" class="form-control" value="<?php echo htmlspecialchars($keyword ?? ''); ?>">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="min_price">Min Price (£):</label>
+                        <input type="number" id="min_price" name="min_price" step="0.01" min="0" class="form-control" value="<?php echo $minPrice ?? ''; ?>">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="max_price">Max Price (£):</label>
+                        <input type="number" id="max_price" name="max_price" step="0.01" min="0" class="form-control" value="<?php echo $maxPrice ?? ''; ?>">
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="button" id="resetSearch" class="btn btn-secondary">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px; background-color: #eee;">
+        <div class="text-center p-5">
+            <p>Map will be displayed here when API key is configured.</p>
+        </div>
+    </div>
+    
+    <div id="searchResults" class="row">
+        <?php if (count($view->chargePoints) > 0): ?>
+            <?php foreach ($view->chargePoints as $chargePoint): ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <?php if ($chargePoint['image']): ?>
+                            <img src="uploads/<?php echo $chargePoint['image']; ?>" class="card-img-top" alt="Charge Point">
+                        <?php else: ?>
+                            <div class="card-img-top bg-light text-center p-4">
+                                <i class="fas fa-charging-station fa-3x"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo htmlspecialchars($chargePoint['address']); ?></h5>
+                            <p class="card-text">
+                                <strong>Owner:</strong> <?php echo htmlspecialchars($chargePoint['owner_name']); ?><br>
+                                <strong>Price:</strong> £<?php echo $chargePoint['price']; ?> per kWh
+                            </p>
+                            <a href="book-chargepoint.php?id=<?php echo $chargePoint['id']; ?>" class="btn btn-primary">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No charge points found matching your criteria.
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script>
+    // AJAX-based live search
+    $(document).ready(function() {
+        // Function to load charge points
+        function loadChargePoints() {
+            var keyword = $('#keyword').val();
+            var minPrice = $('#min_price').val();
+            var maxPrice = $('#max_price').val();
+            
+            $.ajax({
+                url: 'search.php',
+                type: 'GET',
+                data: {
+                    keyword: keyword,
+                    min_price: minPrice,
+                    max_price: maxPrice
+                },
+                dataType: 'json',
+                success: function(data) {
+                    // Clear previous results
+                    $('#searchResults').empty();
+                    
+                    if (data.length > 0) {
+                        // Display each charge point
+                        $.each(data, function(index, chargePoint) {
+                            var html = '<div class="col-md-4 mb-4">';
+                            html += '<div class="card h-100">';
+                            
+                            if (chargePoint.image) {
+                                html += '<img src="uploads/' + chargePoint.image + '" class="card-img-top" alt="Charge Point">';
+                            } else {
+                                html += '<div class="card-img-top bg-light text-center p-4">';
+                                html += '<i class="fas fa-charging-station fa-3x"></i>';
+                                html += '</div>';
+                            }
+                            
+                            html += '<div class="card-body">';
+                            html += '<h5 class="card-title">' + chargePoint.address + '</h5>';
+                            html += '<p class="card-text">';
+                            html += '<strong>Owner:</strong> ' + chargePoint.owner_name + '<br>';
+                            html += '<strong>Price:</strong> £' + chargePoint.price + ' per kWh';
+                            html += '</p>';
+                            html += '<a href="book-chargepoint.php?id=' + chargePoint.id + '" class="btn btn-primary">Book Now</a>';
+                            html += '</div></div></div>';
+                            
+                            $('#searchResults').append(html);
+                        });
+                    } else {
+                        // No results found
+                        $('#searchResults').html('<div class="col-12"><div class="alert alert-info">No charge points found matching your criteria.</div></div>');
+                    }
+                },
+                error: function() {
+                    $('#searchResults').html('<div class="col-12"><div class="alert alert-danger">Error loading charge points. Please try again.</div></div>');
+                }
+            });
+        }
+        
+        // Trigger search on form submission
+        $('#searchForm').submit(function(e) {
+            e.preventDefault();
+            loadChargePoints();
+        });
+        
+        // Live search on input change (with debounce)
+        var searchTimeout;
+        $('#keyword, #min_price, #max_price').on('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                loadChargePoints();
+            }, 500); // Wait 500ms after typing stops
+        });
+        
+        // Reset search
+        $('#resetSearch').click(function() {
+            $('#keyword').val('');
+            $('#min_price').val('');
+            $('#max_price').val('');
+            loadChargePoints();
+        });
+    });
+</script>
+
+<?php include 'views/includes/footer.phtml'; ?>
