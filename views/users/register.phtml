@@ -1,4 +1,5 @@
 <?php include 'views/includes/header.phtml'; ?>
+<?php require_once 'config/recaptcha.php'; ?>
 
 <div class="row">
     <div class="col-md-6 mx-auto">
@@ -34,6 +35,11 @@
                         <option value="user">EV Owner</option>
                         <option value="homeowner">Homeowner</option>
                     </select>
+                </div>
+                
+                <!-- Google reCAPTCHA v2 -->
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="<?php echo $recaptcha_site_key; ?>"></div>
                 </div>
                 <div class="row">
                     <div class="col">

@@ -1,4 +1,5 @@
 <?php include 'views/includes/header.phtml'; ?>
+<?php require_once 'config/recaptcha.php'; ?>
 
 <div class="row">
     <div class="col-md-6 mx-auto">
@@ -17,6 +18,12 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" class="form-control" required>
                 </div>
+                
+                <!-- Google reCAPTCHA v2 -->
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="<?php echo $recaptcha_site_key; ?>"></div>
+                </div>
+                
                 <div class="row">
                     <div class="col">
                         <button type="submit" name="login_submit" class="btn btn-success btn-block">Login</button>
