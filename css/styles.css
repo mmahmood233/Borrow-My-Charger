@@ -1,0 +1,48 @@
+/* Custom styles for Borrow My Charger */
+
+/* Animation for booking status updates */
+@keyframes highlight {
+    0% {
+        background-color: transparent;
+    }
+    20% {
+        background-color: rgba(52, 199, 89, 0.2); /* Light green */
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.highlight-update {
+    animation: highlight 2s ease-in-out;
+}
+
+/* Improve status badges */
+.badge-success {
+    background-color: #34c759;
+}
+
+.badge-warning {
+    background-color: #ff9500;
+    color: #fff;
+}
+
+.badge-danger {
+    background-color: #ff3b30;
+}
+
+.badge-info {
+    background-color: #5ac8fa;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+    }
+}

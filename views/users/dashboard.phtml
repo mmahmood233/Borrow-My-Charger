@@ -29,13 +29,13 @@
                         </thead>
                         <tbody>
                             <?php foreach ($view->bookings as $booking): ?>
-                                <tr>
+                                <tr data-booking-id="<?php echo $booking['id']; ?>">
                                     <td><?php echo htmlspecialchars($booking['address']); ?></td>
                                     <td><?php echo htmlspecialchars($booking['owner_name']); ?></td>
                                     <td><?php echo date('d/m/Y', strtotime($booking['booking_date'])); ?></td>
                                     <td><?php echo date('H:i', strtotime($booking['booking_time'])); ?></td>
                                     <td>£<?php echo $booking['price']; ?> per kWh</td>
-                                    <td>
+                                    <td class="booking-status">
                                         <?php if ($booking['status'] === 'pending'): ?>
                                             <span class="badge badge-warning">Pending</span>
                                         <?php elseif ($booking['status'] === 'approved'): ?>
@@ -44,7 +44,7 @@
                                             <span class="badge badge-danger">Declined</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
+                                    <td class="booking-actions">
                                         <?php if ($booking['status'] === 'pending'): ?>
                                             <a href="cancel-booking.php?id=<?php echo $booking['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</a>
                                         <?php else: ?>
