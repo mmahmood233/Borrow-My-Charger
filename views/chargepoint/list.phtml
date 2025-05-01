@@ -34,9 +34,12 @@
     </div>
     
     <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px; background-color: #eee;">
-        <div class="text-center p-5">
-            <p>Map will be displayed here when API key is configured.</p>
-        </div>
+        <!-- Map will be loaded here -->
+    </div>
+    
+    <!-- Hidden container to store charge point data for the map -->
+    <div id="map-data" style="display: none;" 
+         data-charge-points='<?php echo json_encode($view->chargePoints); ?>'>
     </div>
     
     <div id="searchResults" class="row">
