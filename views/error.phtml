@@ -1,0 +1,50 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4><i class="fas fa-exclamation-circle mr-2"></i>Access Restricted</h4>
+                </div>
+                <div class="card-body">
+                    <?php if (isset($view->error)): ?>
+                        <div class="alert alert-danger">
+                            <?php echo $view->error; ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <p>Please note that different roles in the Borrow My Charger system have different permissions:</p>
+                    
+                    <ul class="list-group mb-4">
+                        <li class="list-group-item">
+                            <i class="fas fa-user mr-2 text-primary"></i>
+                            <strong>Users</strong>: Can search for and book charge points
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-home mr-2 text-success"></i>
+                            <strong>Homeowners</strong>: Can manage their own charge points and approve bookings
+                        </li>
+                        <li class="list-group-item active">
+                            <i class="fas fa-user-shield mr-2"></i>
+                            <strong>Administrators</strong>: Can manage all charge points, users, and system settings
+                        </li>
+                    </ul>
+                    
+                    <div class="text-center">
+                        <a href="index.php" class="btn btn-primary">
+                            <i class="fas fa-home mr-2"></i>Return to Home
+                        </a>
+                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                            <a href="admin-dashboard.php" class="btn btn-success ml-2">
+                                <i class="fas fa-tachometer-alt mr-2"></i>Go to Admin Dashboard
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

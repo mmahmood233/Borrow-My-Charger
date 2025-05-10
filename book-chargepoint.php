@@ -3,9 +3,22 @@ session_start();
 $view = new stdClass();
 $view->pageTitle = "Book Charge Point";
 
-// Check if user is logged in and is a regular user
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
+    exit;
+}
+
+// Check if user has the correct role
+if ($_SESSION['user_role'] === 'admin') {
+    // For admins, show a message instead of redirecting
+    $view->pageTitle = "Access Restricted";
+    $view->error = "As an administrator, you can manage the system but cannot book charge points. This feature is only available for regular users.";
+    require_once("views/error.phtml");
+    exit;
+} else if ($_SESSION['user_role'] !== 'user') {
+    // For homeowners or other roles
+    header("Location: index.php");
     exit;
 }
 
