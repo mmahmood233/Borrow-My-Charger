@@ -25,11 +25,47 @@
                         <img src="uploads/<?php echo $view->chargePoint['image']; ?>" class="img-fluid rounded mb-3" alt="Charge Point">
                     <?php endif; ?>
                     
-                    <div id="map" style="height: 300px; width: 100%; background-color: #eee;">
-                        <div class="text-center p-5">
-                            <p>Map will be displayed here when API key is configured.</p>
-                        </div>
+                    <!-- Debug info for coordinates -->
+                    <div class="small text-muted mb-2">
+                        Location coordinates: <?php echo $view->chargePoint['latitude']; ?>, <?php echo $view->chargePoint['longitude']; ?>
                     </div>
+                    
+                    <div id="map" style="height: 300px; width: 100%; background-color: #eee;"
+                         data-lat="<?php echo $view->chargePoint['latitude']; ?>"
+                         data-lng="<?php echo $view->chargePoint['longitude']; ?>">
+                    </div>
+                    
+                    <!-- Add custom script to ensure map centers on the charge point -->
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // This will run after the page is fully loaded
+                        console.log('Book page loaded, checking map coordinates');
+                        setTimeout(function() {
+                            const mapElement = document.getElementById('map');
+                            if (mapElement) {
+                                const lat = mapElement.getAttribute('data-lat');
+                                const lng = mapElement.getAttribute('data-lng');
+                                console.log('Map coordinates from attributes:', lat, lng);
+                                
+                                // Force map to center on these coordinates if map is initialized
+                                if (window.map && lat && lng) {
+                                    const position = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                                    console.log('Forcing map to center at:', position);
+                                    window.map.setCenter(position);
+                                    window.map.setZoom(15);
+                                    
+                                    // Add a marker if not already there
+                                    new google.maps.Marker({
+                                        position: position,
+                                        map: window.map,
+                                        title: "Charge Point Location",
+                                        animation: google.maps.Animation.DROP
+                                    });
+                                }
+                            }
+                        }, 1000); // Wait 1 second after page load
+                    });
+                    </script>
                 </div>
             </div>
         </div>

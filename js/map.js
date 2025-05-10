@@ -6,6 +6,7 @@ let infoWindow;
 
 // Initialize the map
 function initMap() {
+    console.log('Map initialization started');
     // Default center (UK)
     const defaultCenter = { lat: 53.483710, lng: -2.270110 };
     
@@ -21,7 +22,63 @@ function initMap() {
     // Create info window for markers
     infoWindow = new google.maps.InfoWindow();
     
-    // Try to get user's current location
+    // Check if we're on a specific charge point page
+    const chargePointMap = document.getElementById('map');
+    console.log('Map element found:', chargePointMap ? 'Yes' : 'No');
+    
+    if (chargePointMap && chargePointMap.hasAttribute('data-lat') && chargePointMap.hasAttribute('data-lng')) {
+        // Get coordinates from data attributes
+        const latStr = chargePointMap.getAttribute('data-lat');
+        const lngStr = chargePointMap.getAttribute('data-lng');
+        console.log('Raw coordinates:', latStr, lngStr);
+        
+        const lat = parseFloat(latStr);
+        const lng = parseFloat(lngStr);
+        console.log('Parsed coordinates:', lat, lng);
+        
+        if (!isNaN(lat) && !isNaN(lng)) {
+            console.log('Valid coordinates found, centering map');
+            const chargePointLocation = { lat: lat, lng: lng };
+            
+            // Force a small delay to ensure the map is fully loaded
+            setTimeout(() => {
+                // Center map on charge point location
+                map.setCenter(chargePointLocation);
+                map.setZoom(15); // Zoom in closer
+                
+                // Add marker for charge point location
+                const chargePointMarker = new google.maps.Marker({
+                    position: chargePointLocation,
+                    map: map,
+                    title: "Charge Point Location",
+                    animation: google.maps.Animation.DROP
+                });
+                
+                // Add the marker to our array
+                markers.push(chargePointMarker);
+                
+                // Open info window with charge point details
+                const content = '<div><strong>Charge Point Location</strong><br>Click for directions</div>';
+                infoWindow.setContent(content);
+                infoWindow.open(map, chargePointMarker);
+                
+                // Add click listener to open Google Maps directions
+                google.maps.event.addListener(chargePointMarker, 'click', function() {
+                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+                });
+                
+                console.log('Map centered at:', lat, lng);
+            }, 500);
+            
+            return; // Skip the rest of the initialization since we've centered on the charge point
+        } else {
+            console.log('Invalid coordinates, using default behavior');
+        }
+    } else {
+        console.log('Not on a charge point detail page or missing data attributes');
+    }
+    
+    // If not on a specific charge point page, try to get user's current location
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
