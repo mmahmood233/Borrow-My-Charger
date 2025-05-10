@@ -4,11 +4,83 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
-    <!-- Google Maps API - Replace YOUR_API_KEY with an actual Google Maps API key -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBULjLtnYxV3pCL1g7GwwDfU_ZFYCcLJmM&callback=initMap" async defer></script>
-    
     <!-- Custom JavaScript -->
-    <script src="js/map.js"></script>
     <script src="js/booking-status.js"></script>
+    
+    <!-- Google Maps initialization script -->
+    <script>
+    // Global map initialization function (called by Google Maps API)
+    function initMap() {
+        console.log('Google Maps API loaded, initializing maps');
+        
+        // Check which map container exists on the current page
+        if (document.getElementById('home-map')) {
+            // Load home page map script dynamically
+            loadScript('js/home-map.js', function() {
+                // Initialize home page map
+                if (typeof initHomeMap === 'function') {
+                    initHomeMap();
+                }
+            });
+        } 
+        else if (document.getElementById('map')) {
+            // Check if we're on the chargepoints.php page or book-chargepoint.php page
+            const bookingPage = document.querySelector('.card-header h5')?.textContent.includes('Charge Point Details');
+            
+            if (bookingPage) {
+                // We're on the booking page, load the map with single point
+                const mapElement = document.getElementById('map');
+                if (mapElement && mapElement.hasAttribute('data-lat') && mapElement.hasAttribute('data-lng')) {
+                    const lat = parseFloat(mapElement.getAttribute('data-lat'));
+                    const lng = parseFloat(mapElement.getAttribute('data-lng'));
+                    
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        // Create a simple map centered on the charge point
+                        const position = { lat: lat, lng: lng };
+                        const map = new google.maps.Map(mapElement, {
+                            zoom: 15,
+                            center: position,
+                            mapTypeControl: true,
+                            streetViewControl: true,
+                            fullscreenControl: true
+                        });
+                        
+                        // Add a marker for the charge point
+                        const marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            title: "Charge Point Location",
+                            animation: google.maps.Animation.DROP
+                        });
+                        
+                        // Add click listener to open Google Maps directions
+                        marker.addListener('click', function() {
+                            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+                        });
+                    }
+                }
+            } else {
+                // We're on the chargepoints.php page, load the regular map script
+                loadScript('js/map.js', function() {
+                    if (typeof window.initMap === 'function') {
+                        window.initMap();
+                    }
+                });
+            }
+        }
+    }
+    
+    // Helper function to load scripts dynamically
+    function loadScript(url, callback) {
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        script.onload = callback;
+        document.head.appendChild(script);
+    }
+    </script>
+    
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBULjLtnYxV3pCL1g7GwwDfU_ZFYCcLJmM&callback=initMap" async defer></script>
 </body>
 </html>

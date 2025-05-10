@@ -78,7 +78,9 @@
                         <li class="mb-2">Book in advance</li>
                         <li>Pay securely online</li>
                     </ul>
-                    <a href="register.php" class="btn btn-outline-primary" style="border-radius: 10px;">Register as User</a>
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <a href="register.php" class="btn btn-outline-primary" style="border-radius: 10px;">Register as User</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -97,7 +99,9 @@
                         <li class="mb-2">Set your own price</li>
                         <li>Receive bookings</li>
                     </ul>
-                    <a href="register.php" class="btn btn-outline-success" style="border-radius: 10px;">Register as Homeowner</a>
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <a href="register.php" class="btn btn-outline-success" style="border-radius: 10px;">Register as Homeowner</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -158,107 +162,12 @@
         <div class="col-12">
             <h2 style="font-weight: 600; letter-spacing: -0.025em;">Find Chargers Near You</h2>
             <p class="text-muted mb-4">Explore charging points on the map</p>
-            <div id="map" style="height: 400px; width: 100%; border-radius: 20px;" class="shadow-sm"></div>
+            <div id="home-map" style="height: 500px; width: 100%; border-radius: 10px; margin-bottom: 30px;"></div>
         </div>
     </div>
 </div>
 
-<!-- Google Maps Script -->
-<script>
-function initMap() {
-    // Default map center (London)
-    var center = {lat: 51.5074, lng: -0.1278};
-    
-    // Create map
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 10,
-        center: center,
-        styles: [
-            {
-                "featureType": "administrative",
-                "elementType": "all",
-                "stylers": [{"saturation": "-100"}]
-            },
-            {
-                "featureType": "administrative.province",
-                "elementType": "all",
-                "stylers": [{"visibility": "off"}]
-            },
-            {
-                "featureType": "landscape",
-                "elementType": "all",
-                "stylers": [{"saturation": -100}, {"lightness": 65}, {"visibility": "on"}]
-            },
-            {
-                "featureType": "poi",
-                "elementType": "all",
-                "stylers": [{"saturation": -100}, {"lightness": "50"}, {"visibility": "simplified"}]
-            },
-            {
-                "featureType": "road",
-                "elementType": "all",
-                "stylers": [{"saturation": "-100"}]
-            },
-            {
-                "featureType": "road.highway",
-                "elementType": "all",
-                "stylers": [{"visibility": "simplified"}]
-            },
-            {
-                "featureType": "road.arterial",
-                "elementType": "all",
-                "stylers": [{"lightness": "30"}]
-            },
-            {
-                "featureType": "road.local",
-                "elementType": "all",
-                "stylers": [{"lightness": "40"}]
-            },
-            {
-                "featureType": "transit",
-                "elementType": "all",
-                "stylers": [{"saturation": -100}, {"visibility": "simplified"}]
-            },
-            {
-                "featureType": "water",
-                "elementType": "geometry",
-                "stylers": [{"hue": "#ffff00"}, {"lightness": -25}, {"saturation": -97}]
-            },
-            {
-                "featureType": "water",
-                "elementType": "labels",
-                "stylers": [{"lightness": -25}, {"saturation": -100}]
-            }
-        ]
-    });
-
-    // Add markers for charge points if they exist
-    <?php if (isset($view->latestChargePoints) && !empty($view->latestChargePoints)): ?>
-        <?php foreach ($view->latestChargePoints as $chargePoint): ?>
-            <?php if (!empty($chargePoint['latitude']) && !empty($chargePoint['longitude'])): ?>
-                var marker = new google.maps.Marker({
-                    position: {lat: <?php echo $chargePoint['latitude']; ?>, lng: <?php echo $chargePoint['longitude']; ?>},
-                    map: map,
-                    title: '<?php echo htmlspecialchars($chargePoint['address']); ?>',
-                    icon: {
-                        url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
-                    }
-                });
-                
-                var infoWindow = new google.maps.InfoWindow({
-                    content: '<div style="width: 200px;"><h6 style="margin-bottom: 5px;"><?php echo htmlspecialchars($chargePoint['address']); ?></h6>' +
-                             '<p style="margin-bottom: 5px;"><strong>Price:</strong> £<?php echo number_format($chargePoint['price'], 2); ?> per hour</p>' +
-                             '<a href="chargepoint.php?id=<?php echo $chargePoint['id']; ?>" class="btn btn-sm btn-primary">View Details</a></div>'
-                });
-                
-                marker.addListener('click', function() {
-                    infoWindow.open(map, marker);
-                });
-            <?php endif; ?>
-        <?php endforeach; ?>
-    <?php endif; ?>
-}
-</script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+<!-- Add hidden div to store charge point data for the map -->
+<div id="map-data" style="display: none;" data-charge-points='<?php echo json_encode($view->latestChargePoints); ?>'></div>
 
 <?php include 'views/includes/footer.phtml'; ?>
