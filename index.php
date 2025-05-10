@@ -1,4 +1,7 @@
 <?php
+// Start session to maintain login state
+session_start();
+
 // Simple MVC approach
 $view = new stdClass();
 $view->pageTitle = 'Home';
