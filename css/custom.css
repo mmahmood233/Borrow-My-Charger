@@ -1,0 +1,101 @@
+/* Custom styles for Borrow My Charger - extending Bootstrap */
+
+/* 
+ * This stylesheet extends Bootstrap's functionality while maintaining
+ * compatibility with Bootstrap's component model and utility classes.
+ */
+
+/* Typography - extending Bootstrap's font utilities */
+.hero-title {
+    font-weight: 600; /* Using Bootstrap's font-weight scale */
+    font-size: 3.5rem; /* Extending Bootstrap's display headings */
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem; /* Bootstrap's lead size */
+    font-weight: 400; /* Bootstrap's normal font weight */
+}
+
+.section-title {
+    font-weight: 600; /* Bootstrap's semi-bold */
+    letter-spacing: -0.025em;
+}
+
+/* Buttons - extending Bootstrap's button component */
+.btn-rounded {
+    border-radius: 10px; /* Customizing Bootstrap's button border-radius */
+}
+
+/* Bootstrap already has .btn-lg with appropriate padding */
+
+/* Cards - extending Bootstrap's card component */
+.card-rounded {
+    border-radius: 20px; /* Customizing Bootstrap's card border-radius */
+}
+
+.card-feature {
+    border: 0; /* Bootstrap's .border-0 utility */
+    height: 100%; /* Bootstrap's .h-100 utility */
+}
+
+/* Images - extending Bootstrap's image utilities */
+.img-rounded {
+    border-radius: 20px; /* Extending Bootstrap's .rounded utility */
+}
+
+/* Icons - custom component using Bootstrap's flex utilities */
+.icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 35px;
+    display: inline-flex; /* Bootstrap's .d-inline-flex */
+    align-items: center; /* Bootstrap's .align-items-center */
+    justify-content: center; /* Bootstrap's .justify-content-center */
+    margin-bottom: 1rem; /* Bootstrap's .mb-4 */
+}
+
+.icon-circle-sm {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    display: inline-flex; /* Bootstrap's .d-inline-flex */
+    align-items: center; /* Bootstrap's .align-items-center */
+    justify-content: center; /* Bootstrap's .justify-content-center */
+    margin-right: 0.75rem; /* Bootstrap's .mr-3 */
+}
+
+/* Maps - custom component */
+#home-map {
+    height: 500px;
+    width: 100%; /* Bootstrap's .w-100 */
+    border-radius: 10px; /* Bootstrap's .rounded */
+    margin-bottom: 30px; /* Bootstrap's .mb-5 */
+}
+
+#map {
+    height: 400px;
+    width: 100%; /* Bootstrap's .w-100 */
+    margin-bottom: 20px; /* Bootstrap's .mb-4 */
+    background-color: #eee; /* Bootstrap's .bg-light */
+}
+
+/* User types section - extending Bootstrap's text utilities */
+.user-type-title {
+    margin-bottom: 0; /* Bootstrap's .mb-0 */
+}
+
+/* Feature list - extending Bootstrap's list utilities */
+.feature-list {
+    margin-bottom: 1.5rem; /* Bootstrap's .mb-4 */
+    padding-left: 1.25rem; /* Bootstrap's default list padding */
+}
+
+.feature-list li {
+    margin-bottom: 0.5rem; /* Bootstrap's .mb-2 */
+}
+
+.feature-list li:last-child {
+    margin-bottom: 0; /* Bootstrap's .mb-0 */
+}

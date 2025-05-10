@@ -1,69 +1,115 @@
 <?php include 'views/includes/header.phtml'; ?>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2>Charge Point Details</h2>
-                <p class="lead">Price: £<?php echo number_format($view->chargePoint['price'], 2); ?> per kWh</p>
-                <p><strong>Address:</strong> <?php echo htmlspecialchars($view->chargePoint['address']); ?></p>
+<div class="container mt-4">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light p-3 rounded shadow-sm">
+            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+            <li class="breadcrumb-item"><a href="chargepoints.php">Charge Points</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Details</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- Left column: Image and quick info -->
+        <div class="col-lg-4 mb-4">
+            <!-- Charge point image card -->
+            <div class="card border-0 shadow-sm rounded overflow-hidden mb-4">
+                <?php if (!empty($view->chargePoint['image'])): ?>
+                    <img src="uploads/<?php echo htmlspecialchars($view->chargePoint['image']); ?>" class="card-img-top" alt="Charge Point Image">
+                <?php else: ?>
+                    <div class="card-img-top bg-light text-center p-5">
+                        <i class="fas fa-charging-station fa-4x text-primary"></i>
+                        <p class="mt-3 text-muted">No image available</p>
+                    </div>
+                <?php endif; ?>
                 
-                <!-- Google Map placeholder -->
-                <div id="map" style="height: 300px; width: 100%; margin-bottom: 20px;"
-                     data-lat="<?php echo $view->chargePoint['latitude']; ?>"
-                     data-lng="<?php echo $view->chargePoint['longitude']; ?>"></div>
-                
-                <?php 
-                // Get owner name
-                require_once("models/User.php");
-                $userModel = new User($conn);
-                $owner = $userModel->getUserById($view->chargePoint['user_id']);
-                $ownerName = $owner ? htmlspecialchars($owner['name']) : 'Unknown';
-                ?>
-                
-                <p><strong>Owner:</strong> <?php echo $ownerName; ?></p>
-                <p><strong>Availability:</strong> <?php echo $view->chargePoint['availability'] ? 'Available' : 'Not Available'; ?></p>
+                <!-- Quick info section -->
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0 font-weight-bold">Quick Info</h5>
+                        <span class="badge badge-<?php echo $view->chargePoint['availability'] ? 'success' : 'danger'; ?> p-2">
+                            <?php echo $view->chargePoint['availability'] ? 'Available' : 'Not Available'; ?>
+                        </span>
+                    </div>
+                    
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item px-0 py-2 border-0 d-flex justify-content-between">
+                            <span><i class="fas fa-pound-sign text-muted mr-2"></i> Price:</span>
+                            <span class="font-weight-bold text-success">£<?php echo number_format($view->chargePoint['price'], 2); ?> per kWh</span>
+                        </li>
+                        <?php 
+                        // Get owner name
+                        require_once("models/User.php");
+                        $userModel = new User($conn);
+                        $owner = $userModel->getUserById($view->chargePoint['user_id']);
+                        $ownerName = $owner ? htmlspecialchars($owner['name']) : 'Unknown';
+                        ?>
+                        <li class="list-group-item px-0 py-2 border-0 d-flex justify-content-between">
+                            <span><i class="fas fa-user text-muted mr-2"></i> Owner:</span>
+                            <span class="font-weight-bold"><?php echo $ownerName; ?></span>
+                        </li>
+                        <li class="list-group-item px-0 py-2 border-0 d-flex justify-content-between">
+                            <span><i class="fas fa-map-marker-alt text-muted mr-2"></i> Address:</span>
+                            <span class="font-weight-bold"><?php echo htmlspecialchars($view->chargePoint['address']); ?></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Booking action card -->
+            <div class="card border-0 shadow-sm rounded overflow-hidden">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-check mr-2"></i>Book This Charge Point</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p class="mb-4">Ready to charge your vehicle? Book this charge point now.</p>
+                    <?php if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'user'): ?>
+                        <a href="book-chargepoint.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '1'; ?>" class="btn btn-success btn-lg btn-block">
+                            <i class="fas fa-calendar-check mr-2"></i>Book Now
+                        </a>
+                    <?php elseif (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'admin'): ?>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i>Administrators cannot book charge points. This feature is only available for regular users.
+                        </div>
+                    <?php elseif (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'homeowner'): ?>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i>As a homeowner, you cannot book charge points. This feature is only available for regular users.
+                        </div>
+                    <?php else: ?>
+                        <a href="login.php" class="btn btn-primary btn-lg btn-block mb-3">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login to Book
+                        </a>
+                        <p class="mb-0">Don't have an account? <a href="register.php" class="font-weight-bold">Register here</a></p>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
         
-        <!-- Booking button -->
-        <div class="card">
-            <div class="card-header">
-                <h5>Book This Charge Point</h5>
-            </div>
-            <div class="card-body text-center">
-                <p class="mb-4">Ready to book this charge point? Click below to proceed to our booking form.</p>
-                <?php if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'user'): ?>
-                    <a href="book-chargepoint.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '1'; ?>" class="btn btn-success btn-lg">
-                        <i class="fas fa-calendar-check mr-2"></i>Book Now
-                    </a>
-                <?php elseif (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'admin'): ?>
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle mr-2"></i>Administrators cannot book charge points. This feature is only available for regular users.
-                    </div>
-                <?php elseif (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'homeowner'): ?>
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle mr-2"></i>As a homeowner, you cannot book charge points. This feature is only available for regular users.
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary btn-lg">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Login to Book
-                    </a>
-                    <p class="mt-3">Don't have an account? <a href="register.php">Register here</a></p>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <?php if (!empty($view->chargePoint['image'])): ?>
-                <img src="uploads/<?php echo htmlspecialchars($view->chargePoint['image']); ?>" class="card-img-top" alt="Charge Point Image">
-            <?php else: ?>
-                <div class="card-img-top bg-light text-center p-5">
-                    <i class="fas fa-charging-station fa-4x text-muted"></i>
-                    <p class="mt-3 text-muted">No image available</p>
+        <!-- Right column: Map and details -->
+        <div class="col-lg-8">
+            <!-- Main details card -->
+            <div class="card border-0 shadow-sm rounded overflow-hidden mb-4">
+                <div class="card-header bg-white">
+                    <h2 class="mb-0 font-weight-bold">Charge Point Details</h2>
                 </div>
-            <?php endif; ?>
+                <div class="card-body">
+                    <!-- Location section -->
+                    <h4 class="mb-3"><i class="fas fa-map-marked-alt text-primary mr-2"></i>Location</h4>
+                    
+                    <!-- Google Map with improved UI -->
+                    <div class="map-container rounded overflow-hidden shadow-sm mb-4">
+                        <div id="map" style="height: 400px; width: 100%;"
+                             data-lat="<?php echo $view->chargePoint['latitude']; ?>"
+                             data-lng="<?php echo $view->chargePoint['longitude']; ?>"></div>
+                    </div>
+                    
+
+                </div>
+            </div>
+            
+            <!-- Dynamic reviews could be added here in the future -->
+            <!-- For now, we've removed the hardcoded reviews section -->
         </div>
     </div>
 </div>

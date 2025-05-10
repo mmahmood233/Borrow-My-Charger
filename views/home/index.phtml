@@ -4,13 +4,13 @@
 <div class="container mt-5">
     <div class="row align-items-center">
         <div class="col-lg-6 mb-5 mb-lg-0">
-            <h1 style="font-weight: 600; font-size: 3.5rem; letter-spacing: -0.025em; line-height: 1.1;">Welcome to Borrow My Charger</h1>
-            <p class="text-muted mt-4 mb-4" style="font-size: 1.25rem; font-weight: 400;">Find and book electric vehicle charging points in your area.</p>
+            <h1 class="hero-title">Welcome to Borrow My Charger</h1>
+            <p class="text-muted mt-4 mb-4 lead">Find and book electric vehicle charging points in your area.</p>
             <p class="text-muted mb-4">Homeowners can rent out their charging points to EV owners.</p>
-            <a class="btn btn-primary btn-lg px-4" href="chargepoints.php" style="border-radius: 10px;">Find Chargers</a>
+            <a class="btn btn-primary btn-lg px-4 btn-rounded" href="chargepoints.php">Find Chargers</a>
         </div>
         <div class="col-lg-6">
-            <img src="images/car.jpg" alt="EV Charging" class="img-fluid rounded-lg shadow-sm" style="border-radius: 20px;">
+            <img src="images/car.jpg" alt="EV Charging" class="img-fluid shadow-sm rounded">
         </div>
     </div>
 </div>
@@ -19,40 +19,40 @@
 <div class="container mt-5 pt-5">
     <div class="row">
         <div class="col-12 text-center mb-5">
-            <h2 style="font-weight: 600; letter-spacing: -0.025em;">How It Works</h2>
+            <h2 class="section-title">How It Works</h2>
             <p class="text-muted">Simple steps to start using our platform</p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+            <div class="card border-0 shadow-sm h-100 card-rounded">
                 <div class="card-body p-4 text-center">
-                    <div class="bg-primary text-white d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; border-radius: 35px;">
+                    <div class="bg-primary text-white icon-circle">
                         <i class="fas fa-search fa-2x"></i>
                     </div>
-                    <h5 style="font-weight: 600; letter-spacing: -0.025em;">Find a Charger</h5>
+                    <h5 class="font-weight-bold">Find a Charger</h5>
                     <p class="text-muted">Search for available charging points in your area based on location and price.</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+            <div class="card border-0 shadow-sm h-100 card-rounded">
                 <div class="card-body p-4 text-center">
-                    <div class="bg-success text-white d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; border-radius: 35px;">
+                    <div class="bg-success text-white icon-circle">
                         <i class="fas fa-calendar-check fa-2x"></i>
                     </div>
-                    <h5 style="font-weight: 600; letter-spacing: -0.025em;">Book Your Slot</h5>
+                    <h5 class="font-weight-bold">Book Your Slot</h5>
                     <p class="text-muted">Reserve a charging slot that fits your schedule with just a few clicks.</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+            <div class="card border-0 shadow-sm h-100 card-rounded">
                 <div class="card-body p-4 text-center">
-                    <div class="bg-info text-white d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; border-radius: 35px;">
+                    <div class="bg-info text-white icon-circle">
                         <i class="fas fa-charging-station fa-2x"></i>
                     </div>
-                    <h5 style="font-weight: 600; letter-spacing: -0.025em;">Charge Your EV</h5>
+                    <h5 class="font-weight-bold">Charge Your EV</h5>
                     <p class="text-muted">Arrive at the location and charge your vehicle hassle-free.</p>
                 </div>
             </div>
@@ -64,13 +64,13 @@
 <div class="container mt-5 pt-3">
     <div class="row">
         <div class="col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+            <div class="card border-0 shadow-sm h-100 card-rounded">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
-                        <div class="bg-primary text-white d-inline-flex align-items-center justify-content-center mr-3" style="width: 50px; height: 50px; border-radius: 25px;">
+                        <div class="bg-primary text-white icon-circle-sm">
                             <i class="fas fa-car fa-lg"></i>
                         </div>
-                        <h4 style="font-weight: 600; letter-spacing: -0.025em; margin-bottom: 0;">For EV Owners</h4>
+                        <h4 class="font-weight-bold mb-0">For EV Owners</h4>
                     </div>
                     <p class="text-muted">Search for available charging points in your area and book them for your electric vehicle.</p>
                     <ul class="text-muted mb-4">
@@ -79,19 +79,19 @@
                         <li>Pay securely online</li>
                     </ul>
                     <?php if (!isset($_SESSION['user_id'])): ?>
-                        <a href="register.php" class="btn btn-outline-primary" style="border-radius: 10px;">Register as User</a>
+                        <a href="register.php" class="btn btn-outline-primary rounded">Register as User</a>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
         <div class="col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+            <div class="card border-0 shadow-sm h-100 card-rounded">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
-                        <div class="bg-success text-white d-inline-flex align-items-center justify-content-center mr-3" style="width: 50px; height: 50px; border-radius: 25px;">
+                        <div class="bg-success text-white icon-circle-sm">
                             <i class="fas fa-home fa-lg"></i>
                         </div>
-                        <h4 style="font-weight: 600; letter-spacing: -0.025em; margin-bottom: 0;">For Homeowners</h4>
+                        <h4 class="font-weight-bold mb-0">For Homeowners</h4>
                     </div>
                     <p class="text-muted">Rent out your charging point and earn money when it's not in use.</p>
                     <ul class="text-muted mb-4">
@@ -100,7 +100,7 @@
                         <li>Receive bookings</li>
                     </ul>
                     <?php if (!isset($_SESSION['user_id'])): ?>
-                        <a href="register.php" class="btn btn-outline-success" style="border-radius: 10px;">Register as Homeowner</a>
+                        <a href="register.php" class="btn btn-outline-success rounded">Register as Homeowner</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -112,7 +112,7 @@
 <div class="container mt-5 pt-3">
     <div class="row">
         <div class="col-12">
-            <h2 style="font-weight: 600; letter-spacing: -0.025em;">Latest Charge Points</h2>
+            <h2 class="section-title">Latest Charge Points</h2>
             <p class="text-muted mb-4">Recently added charging points available for booking</p>
         </div>
     </div>

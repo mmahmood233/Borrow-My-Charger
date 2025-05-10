@@ -84,9 +84,11 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="booking_time">Time:</label>
-                                <input type="time" id="booking_time" name="booking_time" class="form-control" required>
-                                <small class="text-muted">Choose a time between 6:00 AM and 10:00 PM</small>
+                                <label for="booking_time">Select a Time Slot:</label>
+                                <select id="booking_time" name="booking_time" class="form-control" required disabled>
+                                    <option value="">Please select a date first</option>
+                                </select>
+                                <small class="text-muted">Available time slots between 6:00 AM and 10:00 PM</small>
                             </div>
                             
                             <div id="availability-info" class="mt-3 mb-3" style="display: none;">
@@ -119,6 +121,27 @@
     </div>
 </div>
 
+<style>
+/* Time slot styling */
+.time-slot-clickable {
+    transition: all 0.2s ease;
+    transform: scale(1);
+}
+
+.time-slot-clickable:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.selected-time-slot {
+    background-color: #28a745 !important;
+    color: white !important;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transform: scale(1.1);
+}
+</style>
+
 <script>
 $(document).ready(function() {
     // When date is selected, check availability
@@ -128,7 +151,18 @@ $(document).ready(function() {
             checkAvailability(selectedDate);
         } else {
             $('#availability-info').hide();
+            // Disable and reset time dropdown
+            $('#booking_time').prop('disabled', true).html('<option value="">Please select a date first</option>');
         }
+    });
+    
+    // When dropdown selection changes, update the highlighted time slot
+    $('#booking_time').on('change', function() {
+        var selectedTime = $(this).val();
+        // Remove highlight from all slots
+        $('.time-slot-clickable').removeClass('selected-time-slot');
+        // Add highlight to the matching slot
+        $('.time-slot-clickable[data-time="' + selectedTime + '"]').addClass('selected-time-slot');
     });
     
     function checkAvailability(date) {
@@ -158,36 +192,107 @@ $(document).ready(function() {
                 // Mark booked and pending times
                 if (data.bookings) {
                     data.bookings.forEach(function(booking) {
-                        bookedTimes[booking.booking_time] = booking.status;
+                        // Normalize time format to ensure consistent matching
+                        var bookingTime = booking.booking_time;
+                        console.log('Booking time from DB:', bookingTime, 'Status:', booking.status);
+                        bookedTimes[bookingTime] = booking.status;
                     });
                 }
                 
+                // Debug: log all booked times
+                console.log('Booked times:', bookedTimes);
+                
+                // Reset time dropdown
+                var timeSelect = $('#booking_time');
+                timeSelect.html('<option value="">Select a time slot</option>');
+                timeSelect.prop('disabled', false);
+                
                 // Generate time slots
                 for (var hour = 6; hour <= 22; hour++) {
-                    var timeStr = (hour < 10 ? '0' + hour : hour) + ':00';
-                    var status = bookedTimes[timeStr] || 'available';
-                    
-                    var badgeClass = 'badge-success';
-                    if (status === 'pending') {
-                        badgeClass = 'badge-warning';
-                    } else if (status === 'approved') {
-                        badgeClass = 'badge-danger';
+                    for (var minute of ['00', '30']) { // Add half-hour slots
+                        // Format time string in the exact format used in the database (HH:MM)
+                        var hourStr = hour < 10 ? '0' + hour : hour;
+                        var timeStr = hourStr + ':' + minute;
+                        var displayTime = formatDisplayTime(hour, minute);
+                        
+                        // Check if this time is booked
+                        var status = 'available';
+                        
+                        // Check all possible time formats that might be in the database
+                        if (bookedTimes[timeStr]) {
+                            status = bookedTimes[timeStr];
+                        } else if (bookedTimes[hour + ':' + minute]) {
+                            status = bookedTimes[hour + ':' + minute];
+                        }
+                        
+                        console.log('Checking time slot:', timeStr, 'Status:', status);
+                        
+                        var badgeClass = 'badge-success';
+                        if (status === 'pending') {
+                            badgeClass = 'badge-warning';
+                        } else if (status === 'approved') {
+                            badgeClass = 'badge-danger';
+                        }
+                        
+                        // Add to visual display with click functionality for available slots
+                        var slot = $('<div class="time-slot m-1">');
+                        var badge = $('<span class="badge ' + badgeClass + ' p-2">').text(displayTime);
+                        
+                        // Make available slots clickable
+                        if (status === 'available') {
+                            badge.css('cursor', 'pointer');
+                            badge.addClass('time-slot-clickable');
+                            badge.attr('data-time', timeStr);
+                            
+                            // Add click handler
+                            badge.on('click', function() {
+                                var selectedTime = $(this).attr('data-time');
+                                // Update dropdown
+                                timeSelect.val(selectedTime);
+                                
+                                // Highlight the selected slot
+                                $('.time-slot-clickable').removeClass('selected-time-slot');
+                                $(this).addClass('selected-time-slot');
+                            });
+                        } else {
+                            // Add tooltip for unavailable slots
+                            badge.attr('title', 'This time slot is ' + status);
+                        }
+                        
+                        slot.append(badge);
+                        $('#availability-slots').append(slot);
+                        
+                        // Add to dropdown if available
+                        if (status === 'available') {
+                            timeSelect.append($('<option>', {
+                                value: timeStr, // Always use the standardized format for the value
+                                text: displayTime
+                            }));
+                        }
                     }
-                    
-                    var slot = $('<div class="time-slot m-1">').append(
-                        $('<span class="badge ' + badgeClass + ' p-2">').text(
-                            (hour > 12 ? (hour - 12) : hour) + 
-                            (hour >= 12 ? ' PM' : ' AM')
-                        )
-                    );
-                    
-                    $('#availability-slots').append(slot);
+                }
+                
+                // If no available times
+                if (timeSelect.find('option').length <= 1) {
+                    timeSelect.append($('<option>', {
+                        value: '',
+                        text: 'No available time slots for this date',
+                        disabled: true
+                    }));
                 }
             },
             error: function() {
                 console.error('Error checking availability');
+                $('#booking_time').prop('disabled', true).html('<option value="">Error loading time slots</option>');
             }
         });
+    }
+    
+    // Helper function to format time for display
+    function formatDisplayTime(hour, minute) {
+        var period = hour >= 12 ? 'PM' : 'AM';
+        var displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+        return displayHour + ':' + minute + ' ' + period;
     }
 });
 </script>
