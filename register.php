@@ -35,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_submit'])) {
         $view->error = "Please verify that you are not a robot.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $view->error = "Invalid email format.";
+    } elseif (strlen($password) < 8) {
+        $view->error = "Password must be at least 8 characters long.";
     } elseif ($password !== $confirm_password) {
         $view->error = "Passwords do not match.";
     } elseif ($userModel->emailExists($email)) {
