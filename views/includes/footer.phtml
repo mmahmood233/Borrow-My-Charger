@@ -13,6 +13,10 @@
     function initMap() {
         console.log('Google Maps API loaded, initializing maps');
         
+        // Dispatch an event that the maps API is loaded
+        // This allows other pages to know when they can initialize their maps
+        document.dispatchEvent(new Event('maps_api_loaded'));
+        
         // Check which map container exists on the current page
         if (document.getElementById('home-map')) {
             // Load home page map script dynamically
@@ -23,21 +27,21 @@
                 }
             });
         } 
-        else if (document.getElementById('map')) {
+        else if (document.getElementById('map') || document.getElementById('booking-map')) {
             // Check if we're on the chargepoints.php page or book-chargepoint.php page
             const bookingPage = document.querySelector('.card-header h5')?.textContent.includes('Charge Point Details');
             
-            if (bookingPage) {
-                // We're on the booking page, load the map with single point
-                const mapElement = document.getElementById('map');
-                if (mapElement && mapElement.hasAttribute('data-lat') && mapElement.hasAttribute('data-lng')) {
-                    const lat = parseFloat(mapElement.getAttribute('data-lat'));
-                    const lng = parseFloat(mapElement.getAttribute('data-lng'));
-                    
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        // Create a simple map centered on the charge point
-                        const position = { lat: lat, lng: lng };
-                        const map = new google.maps.Map(mapElement, {
+            // Get the map element (either 'map' or 'booking-map')
+            const mapElement = document.getElementById('map') || document.getElementById('booking-map');
+            
+            if (mapElement && mapElement.hasAttribute('data-lat') && mapElement.hasAttribute('data-lng')) {
+                const lat = parseFloat(mapElement.getAttribute('data-lat'));
+                const lng = parseFloat(mapElement.getAttribute('data-lng'));
+                
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    // Create a simple map centered on the charge point
+                    const position = { lat: lat, lng: lng };
+                    const map = new google.maps.Map(mapElement, {
                             zoom: 15,
                             center: position,
                             mapTypeControl: true,
@@ -81,6 +85,107 @@
     </script>
     
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBULjLtnYxV3pCL1g7GwwDfU_ZFYCcLJmM&callback=initMap" async defer></script>
+    <script>
+    // Load Google Maps API only if it hasn't been loaded yet
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+        var script = document.createElement('script');
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBULjLtnYxV3pCL1g7GwwDfU_ZFYCcLJmM&callback=googleMapsCallback";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    } else {
+        // If already loaded, call all map callbacks
+        googleMapsCallback();
+    }
+    
+    // Central callback that calls all map initialization functions
+    function googleMapsCallback() {
+        console.log('Google Maps API loaded, initializing all maps');
+        
+        // Call the global initMap function for regular pages
+        if (typeof initMap === 'function') {
+            try {
+                initMap();
+            } catch (e) {
+                console.error('Error in initMap:', e);
+            }
+        }
+        
+        // Call booking map callback if it exists
+        if (typeof window.bookingMapCallback === 'function') {
+            try {
+                window.bookingMapCallback();
+            } catch (e) {
+                console.error('Error in bookingMapCallback:', e);
+            }
+        }
+        
+        // Call any other map initialization callbacks
+        if (typeof window.initializeBookingMap === 'function') {
+            try {
+                window.initializeBookingMap();
+            } catch (e) {
+                console.error('Error in initializeBookingMap:', e);
+            }
+        }
+        
+        // Call chargepoints map callback if it exists
+        if (typeof window.chargepointsMapCallback === 'function') {
+            try {
+                window.chargepointsMapCallback();
+            } catch (e) {
+                console.error('Error in chargepointsMapCallback:', e);
+            }
+        }
+        
+        // Call direct initialization functions if they exist
+        if (typeof window.initializeChargepointsMap === 'function') {
+            try {
+                window.initializeChargepointsMap();
+            } catch (e) {
+                console.error('Error in initializeChargepointsMap:', e);
+            }
+        }
+        
+        // Call detail map callback if it exists
+        if (typeof window.detailMapCallback === 'function') {
+            try {
+                window.detailMapCallback();
+            } catch (e) {
+                console.error('Error in detailMapCallback:', e);
+            }
+        }
+        
+        // Call direct detail map initialization if it exists
+        if (typeof window.initializeDetailMap === 'function') {
+            try {
+                window.initializeDetailMap();
+            } catch (e) {
+                console.error('Error in initializeDetailMap:', e);
+            }
+        }
+        
+        // Call home map callback if it exists
+        if (typeof window.homeMapCallback === 'function') {
+            try {
+                window.homeMapCallback();
+            } catch (e) {
+                console.error('Error in homeMapCallback:', e);
+            }
+        }
+        
+        // Call direct home map initialization if it exists
+        if (typeof window.initializeHomeMap === 'function') {
+            try {
+                window.initializeHomeMap();
+            } catch (e) {
+                console.error('Error in initializeHomeMap:', e);
+            }
+        }
+        
+        // Dispatch event for any event-based map initializations
+        document.dispatchEvent(new Event('maps_api_loaded'));
+    }
+    </script>
 </body>
 </html>

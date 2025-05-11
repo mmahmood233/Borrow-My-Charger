@@ -42,6 +42,9 @@
          data-charge-points='<?php echo json_encode($view->chargePoints); ?>'>
     </div>
     
+    <!-- Include chargepoints map JavaScript -->
+    <script src="js/chargepoints-map.js"></script>
+    
     <div id="searchResults" class="row">
         <?php if (count($view->chargePoints) > 0): ?>
             <?php foreach ($view->chargePoints as $chargePoint): ?>

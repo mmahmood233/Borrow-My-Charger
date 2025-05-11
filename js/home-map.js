@@ -1,21 +1,117 @@
 // Google Maps integration for Borrow My Charger homepage
 let homeMap;
 
-// Initialize the map for the homepage
-function initHomeMap() {
-    console.log('Initializing home page map');
+// Initialize map directly without relying on external scripts
+function initializeHomeMap() {
+    var mapElement = document.getElementById('home-map');
+    var dataElement = document.getElementById('map-data');
     
-    // Default map center (Bahrain)
-    const defaultCenter = { lat: 26.0667, lng: 50.5577 };
+    if (!mapElement || !dataElement) {
+        console.error('Map or data element not found');
+        return;
+    }
     
-    // Create the map with custom styling
-    homeMap = new google.maps.Map(document.getElementById("home-map"), {
-        zoom: 11,
-        center: defaultCenter,
-        mapTypeControl: true,
-        streetViewControl: false,
-        fullscreenControl: true,
-        styles: [
+    try {
+        // Get charge points data
+        var chargePointsData = JSON.parse(dataElement.getAttribute('data-charge-points'));
+        
+        if (!chargePointsData || chargePointsData.length === 0) {
+            console.log('No charge points data available for home map');
+            mapElement.innerHTML = '<div class="alert alert-info text-center p-5">No charge points available to display on map.</div>';
+            return;
+        }
+        
+        // Check if Google Maps is loaded
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+            console.error('Google Maps not loaded yet for home map');
+            mapElement.innerHTML = '<div class="alert alert-warning text-center p-5">Map loading... Please wait or refresh the page.</div>';
+            return;
+        }
+        
+        console.log('Creating home map with', chargePointsData.length, 'points');
+        
+        // Create map centered on the first charge point or default location
+        var defaultCenter = {lat: 53.483710, lng: -2.270110}; // UK center
+        var mapCenter = defaultCenter;
+        
+        if (chargePointsData.length > 0 && chargePointsData[0].latitude && chargePointsData[0].longitude) {
+            mapCenter = {
+                lat: parseFloat(chargePointsData[0].latitude),
+                lng: parseFloat(chargePointsData[0].longitude)
+            };
+        }
+        
+        homeMap = new google.maps.Map(mapElement, {
+            zoom: 10,
+            center: mapCenter,
+            mapTypeControl: true,
+            streetViewControl: true,
+            fullscreenControl: true
+        });
+        
+        // Add markers for all charge points
+        var bounds = new google.maps.LatLngBounds();
+        var infoWindow = new google.maps.InfoWindow();
+        
+        chargePointsData.forEach(function(point) {
+            if (!point.latitude || !point.longitude) return;
+            
+            var position = {
+                lat: parseFloat(point.latitude),
+                lng: parseFloat(point.longitude)
+            };
+            
+            // Add marker
+            var marker = new google.maps.Marker({
+                position: position,
+                map: homeMap,
+                title: point.address,
+                animation: google.maps.Animation.DROP
+            });
+            
+            // Create info window content
+            var content = '<div class="info-window">' +
+                '<h5>' + point.address + '</h5>' +
+                '<p><strong>Price:</strong> £' + point.price + ' per kWh</p>' +
+                '<p><a href="chargepoint.php?id=' + point.id + '" class="btn btn-sm btn-primary">View Details</a></p>' +
+                '</div>';
+            
+            // Add click listener
+            marker.addListener('click', function() {
+                infoWindow.setContent(content);
+                infoWindow.open(homeMap, marker);
+            });
+            
+            // Extend bounds
+            bounds.extend(position);
+        });
+        
+        // Fit map to bounds if we have multiple points
+        if (chargePointsData.length > 1) {
+            homeMap.fitBounds(bounds);
+        }
+        
+        console.log('Home map initialized successfully');
+    } catch (error) {
+        console.error('Error initializing home map:', error);
+        mapElement.innerHTML = '<div class="alert alert-danger text-center p-5">Error loading map. Please refresh the page.</div>';
+    }
+}
+
+// Try to initialize immediately if Google Maps is already loaded
+if (typeof google !== 'undefined' && google.maps) {
+    initializeHomeMap();
+} else {
+    // Otherwise set up a callback for when Google Maps loads
+    window.homeMapCallback = initializeHomeMap;
+    // And check periodically
+    var checkInterval = setInterval(function() {
+        if (typeof google !== 'undefined' && google.maps) {
+            clearInterval(checkInterval);
+            initializeHomeMap();
+        }
+    }, 500);
+}
             {
                 "featureType": "administrative",
                 "elementType": "labels.text.fill",
