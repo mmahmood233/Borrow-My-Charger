@@ -65,8 +65,11 @@
                 <div class="card-body text-center">
                     <p class="mb-4">Ready to charge your vehicle? Book this charge point now.</p>
                     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'user'): ?>
-                        <a href="book-chargepoint.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '1'; ?>" class="btn btn-success btn-lg btn-block">
+                        <a href="book-chargepoint.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '1'; ?>" class="btn btn-success btn-lg btn-block mb-3">
                             <i class="fas fa-calendar-check mr-2"></i>Book Now
+                        </a>
+                        <a href="contact-homeowner.php?chargepoint_id=<?php echo isset($_GET['id']) ? $_GET['id'] : '1'; ?>" class="btn btn-outline-primary btn-block">
+                            <i class="fas fa-envelope mr-2"></i>Contact Homeowner
                         </a>
                     <?php elseif (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'admin'): ?>
                         <div class="alert alert-info">

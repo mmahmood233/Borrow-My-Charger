@@ -1,0 +1,88 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="container mt-4">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light p-3 rounded shadow-sm">
+            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+            <li class="breadcrumb-item"><a href="chargepoints.php">Charge Points</a></li>
+            <li class="breadcrumb-item"><a href="chargepoint.php?id=<?php echo $view->chargePoint['id']; ?>">Details</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Contact Homeowner</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card border-0 shadow-sm rounded overflow-hidden mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-envelope mr-2"></i>Contact Homeowner</h2>
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($view->error)): ?>
+                        <div class="alert alert-danger"><?php echo $view->error; ?></div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($view->success)): ?>
+                        <div class="alert alert-success">
+                            <?php echo $view->success; ?>
+                            <div class="mt-3">
+                                <a href="chargepoint.php?id=<?php echo isset($view->chargePoint['id']) ? $view->chargePoint['id'] : $_GET['chargepoint_id']; ?>" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left mr-2"></i>Back to Charge Point
+                                </a>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="mb-4">
+                            <h5>Sending message about:</h5>
+                            <div class="d-flex align-items-center p-3 bg-light rounded">
+                                <?php if (isset($view->chargePoint['image']) && !empty($view->chargePoint['image'])): ?>
+                                    <img src="uploads/<?php echo htmlspecialchars($view->chargePoint['image']); ?>" class="mr-3" alt="Charge Point" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <?php else: ?>
+                                    <div class="mr-3 bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; border-radius: 4px;">
+                                        <i class="fas fa-charging-station fa-2x"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <div>
+                                    <h6 class="mb-1"><?php echo isset($view->chargePoint['title']) ? htmlspecialchars($view->chargePoint['title']) : 'Chargepoint'; ?></h6>
+                                    <p class="mb-0 text-muted small">
+                                        <i class="fas fa-map-marker-alt mr-1"></i>
+                                        <?php echo isset($view->chargePoint['address']) ? htmlspecialchars($view->chargePoint['address']) : 'Address not available'; ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form action="contact-homeowner.php?chargepoint_id=<?php echo isset($view->chargePoint['id']) ? $view->chargePoint['id'] : $_GET['chargepoint_id']; ?>" method="POST">
+                            <div class="form-group">
+                                <label for="to">To:</label>
+                                <input type="text" id="to" class="form-control" value="<?php echo isset($view->homeowner['name']) ? htmlspecialchars($view->homeowner['name']) : 'Homeowner'; ?>" disabled>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="subject">Subject:</label>
+                                <input type="text" id="subject" name="subject" class="form-control" value="<?php echo isset($_POST['subject']) ? htmlspecialchars($_POST['subject']) : 'Inquiry about your chargepoint'; ?>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message:</label>
+                                <textarea id="message" name="message" class="form-control" rows="6" required><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
+                                <small class="form-text text-muted">Please be specific about your inquiry. Include details like when you'd like to use the chargepoint, any special requirements, etc.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" name="contact_submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane mr-2"></i>Send Message
+                                </button>
+                                <a href="chargepoint.php?id=<?php echo isset($view->chargePoint['id']) ? $view->chargePoint['id'] : $_GET['chargepoint_id']; ?>" class="btn btn-outline-secondary ml-2">
+                                    <i class="fas fa-times mr-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

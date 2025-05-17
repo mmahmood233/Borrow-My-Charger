@@ -1,0 +1,139 @@
+<?php include 'views/includes/header.phtml'; ?>
+
+<div class="container mt-4">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light p-3 rounded shadow-sm">
+            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Messages</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm rounded overflow-hidden mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-envelope mr-2"></i>My Messages</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Message type tabs -->
+                    <ul class="nav nav-tabs mb-4">
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $view->type === 'received' ? 'active' : ''; ?>" href="messages.php?type=received">
+                                <i class="fas fa-inbox mr-2"></i>Received Messages
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $view->type === 'sent' ? 'active' : ''; ?>" href="messages.php?type=sent">
+                                <i class="fas fa-paper-plane mr-2"></i>Sent Messages
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <?php if (empty($view->messages)): ?>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <?php echo $view->type === 'received' ? 'You have no received messages.' : 'You have not sent any messages.'; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" width="20%"><?php echo $view->type === 'received' ? 'From' : 'To'; ?></th>
+                                        <th scope="col" width="20%">Chargepoint</th>
+                                        <th scope="col" width="40%">Subject</th>
+                                        <th scope="col" width="15%">Date</th>
+                                        <th scope="col" width="5%">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($view->messages as $message): ?>
+                                        <tr class="<?php echo ($view->type === 'received' && !$message['is_read']) ? 'font-weight-bold bg-light' : ''; ?>">
+                                            <td>
+                                                <?php echo htmlspecialchars($view->type === 'received' ? $message['sender_name'] : $message['receiver_name']); ?>
+                                            </td>
+                                            <td>
+                                                <a href="chargepoint.php?id=<?php echo $message['chargepoint_id']; ?>">
+                                                    <?php echo htmlspecialchars($message['chargepoint_title']); ?>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" data-toggle="modal" data-target="#messageModal<?php echo $message['id']; ?>">
+                                                    <?php echo htmlspecialchars($message['subject']); ?>
+                                                </a>
+                                            </td>
+                                            <td><?php echo date('M d, Y', strtotime($message['created_at'])); ?></td>
+                                            <td>
+                                                <?php if ($view->type === 'received'): ?>
+                                                    <?php if ($message['is_read']): ?>
+                                                        <span class="badge badge-secondary">Read</span>
+                                                    <?php else: ?>
+                                                        <span class="badge badge-primary">New</span>
+                                                    <?php endif; ?>
+                                                <?php else: ?>
+                                                    <span class="badge badge-info">Sent</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Message Modal -->
+                                        <div class="modal fade" id="messageModal<?php echo $message['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel<?php echo $message['id']; ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="messageModalLabel<?php echo $message['id']; ?>">
+                                                            <?php echo htmlspecialchars($message['subject']); ?>
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <strong><?php echo $view->type === 'received' ? 'From: ' : 'To: '; ?></strong>
+                                                            <?php echo htmlspecialchars($view->type === 'received' ? $message['sender_name'] : $message['receiver_name']); ?>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Regarding Chargepoint: </strong>
+                                                            <a href="chargepoint.php?id=<?php echo $message['chargepoint_id']; ?>">
+                                                                <?php echo htmlspecialchars($message['chargepoint_title']); ?>
+                                                            </a>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Date: </strong>
+                                                            <?php echo date('F d, Y \a\t h:i A', strtotime($message['created_at'])); ?>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="message-content p-3 bg-light rounded">
+                                                            <?php echo nl2br(htmlspecialchars($message['message'])); ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <?php if ($view->type === 'received' && !$message['is_read']): ?>
+                                                            <a href="messages.php?type=received&mark_read=<?php echo $message['id']; ?>" class="btn btn-primary">
+                                                                <i class="fas fa-check mr-2"></i>Mark as Read
+                                                            </a>
+                                                        <?php endif; ?>
+                                                        <?php if ($view->type === 'received'): ?>
+                                                            <a href="contact-homeowner.php?chargepoint_id=<?php echo $message['chargepoint_id']; ?>" class="btn btn-success">
+                                                                <i class="fas fa-reply mr-2"></i>Reply
+                                                            </a>
+                                                        <?php endif; ?>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include 'views/includes/footer.phtml'; ?>

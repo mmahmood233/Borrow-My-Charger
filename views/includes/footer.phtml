@@ -107,7 +107,17 @@
             try {
                 initMap();
             } catch (e) {
-                console.error('Error in initMap:', e);
+                console.error('Error initializing map:', e);
+            }
+        }
+        
+        // Initialize the home map if we're on the home page
+        if (document.getElementById('home-map') && typeof initializeHomeMap === 'function') {
+            console.log('Initializing home map');
+            try {
+                initializeHomeMap();
+            } catch (e) {
+                console.error('Error initializing home map:', e);
             }
         }
         
