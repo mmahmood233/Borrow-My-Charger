@@ -6,10 +6,10 @@ error_reporting(E_ALL);
 
 //currently working locally so when u work just create a new database and 
 // call it localdb and run the script when we are done we will host it then
-$serverName = "localhost"; //change to uni ip when we are done
-$database = "localdb"; // change this after to ur db name 
-$username = "root"; //same here
-$password = ""; //same here
+$serverName = "20.126.5.244"; //change to uni ip when we are done
+$database = "db202200948"; // change this after to ur db name 
+$username = "u202200948"; //same here
+$password = "u202200948"; //same here
 
 try {
     $conn = new PDO("mysql:host=$serverName;dbname=$database;charset=utf8mb4", $username, $password);
