@@ -1,6 +1,6 @@
 <?php include 'views/includes/header.phtml'; ?>
 
-<div class="container mt-4">
+<div class="container mt-4 admin-dashboard">
     <h1>Admin Dashboard</h1>
     <p>Manage users, charge points, and bookings.</p>
     
@@ -199,24 +199,24 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($view->bookings as $booking): ?>
-                                    <tr>
+                                    <tr data-booking-id="<?php echo $booking['id']; ?>">
                                         <td><?php echo $booking['id']; ?></td>
                                         <td><?php echo htmlspecialchars($booking['user_name']); ?> (<?php echo htmlspecialchars($booking['user_email']); ?>)</td>
                                         <td><?php echo htmlspecialchars($booking['address']); ?></td>
                                         <td><?php echo htmlspecialchars($booking['owner_name']); ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($booking['booking_date'])); ?></td>
                                         <td><?php echo date('H:i', strtotime($booking['booking_time'])); ?></td>
-                                        <td>
+                                        <td class="booking-status">
                                             <?php if ($booking['status'] === 'pending'): ?>
-                                                <span class="badge badge-warning">Pending</span>
+                                                <span class="badge badge-warning"><i class="fas fa-clock mr-1"></i>Pending</span>
                                             <?php elseif ($booking['status'] === 'approved'): ?>
-                                                <span class="badge badge-success">Approved</span>
+                                                <span class="badge badge-success"><i class="fas fa-check mr-1"></i>Approved</span>
                                             <?php else: ?>
-                                                <span class="badge badge-danger">Declined</span>
+                                                <span class="badge badge-danger"><i class="fas fa-times mr-1"></i>Declined</span>
                                             <?php endif; ?>
                                         </td>
                                         <td><?php echo date('d/m/Y', strtotime($booking['created_at'])); ?></td>
-                                        <td>
+                                        <td class="booking-actions">
                                             <?php if ($booking['status'] === 'pending'): ?>
                                                 <a href="admin-booking-action.php?id=<?php echo $booking['id']; ?>&action=approve" class="btn btn-sm btn-success">Approve</a>
                                                 <a href="admin-booking-action.php?id=<?php echo $booking['id']; ?>&action=decline" class="btn btn-sm btn-danger">Decline</a>
@@ -381,5 +381,8 @@
         });
     });
 </script>
+
+<!-- Admin Dashboard Specific Scripts -->
+<script src="js/admin-dashboard.js"></script>
 
 <?php include 'views/includes/footer.phtml'; ?>

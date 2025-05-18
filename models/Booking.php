@@ -70,6 +70,7 @@ class Booking {
             return false;
         }
         
+        // Update status (note: updated_at column doesn't exist in the database yet)
         $stmt = $this->conn->prepare("UPDATE bookings SET status = ? WHERE id = ?");
         return $stmt->execute([$status, $id]);
     }
@@ -90,6 +91,80 @@ class Booking {
         }
         
         return $bookings;
+    }
+    
+    /**
+     * Get bookings for a user that have been updated since a specific timestamp
+     * @param int $userId User ID
+     * @param int $timestamp Unix timestamp
+     * @return array Array of bookings
+     */
+    public function getByUserIdSince($userId, $timestamp) {
+        $date = date('Y-m-d H:i:s', $timestamp);
+        $stmt = $this->conn->prepare("
+            SELECT b.*, cp.address, cp.price, u.name as owner_name 
+            FROM bookings b
+            JOIN charge_points cp ON b.charge_point_id = cp.id
+            JOIN users u ON cp.user_id = u.id
+            WHERE b.user_id = ? AND b.created_at > ?
+            ORDER BY b.created_at DESC
+        ");
+        $stmt->execute([$userId, $date]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Get bookings for a homeowner's charge points that have been updated since a specific timestamp
+     * @param int $homeownerId Homeowner user ID
+     * @param int $timestamp Unix timestamp
+     * @return array Array of bookings
+     */
+    public function getByHomeownerIdSince($homeownerId, $timestamp) {
+        $date = date('Y-m-d H:i:s', $timestamp);
+        
+        // Log the query parameters for debugging
+        error_log("Checking for new bookings for homeowner ID: {$homeownerId} since {$date}");
+        
+        // Modified query to ensure we capture all new bookings
+        $stmt = $this->conn->prepare("
+            SELECT b.*, cp.address, u.name as user_name, u.email as user_email
+            FROM bookings b
+            JOIN charge_points cp ON b.charge_point_id = cp.id
+            JOIN users u ON b.user_id = u.id
+            WHERE cp.user_id = ? AND b.created_at >= ?
+            ORDER BY b.created_at DESC
+        ");
+        
+        $stmt->execute([$homeownerId, $date]);
+        $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Log the number of bookings found
+        error_log("Found " . count($bookings) . " new bookings for homeowner ID: {$homeownerId}");
+        
+        return $bookings;
+    }
+    
+    /**
+     * Get all bookings that have been updated since a specific timestamp (admin only)
+     * @param int $timestamp Unix timestamp
+     * @return array Array of bookings
+     */
+    public function getAllBookingsSince($timestamp) {
+        $date = date('Y-m-d H:i:s', $timestamp);
+        $stmt = $this->conn->prepare("
+            SELECT b.*, 
+                   cp.address, cp.price, 
+                   u.name as user_name, u.email as user_email,
+                   h.name as owner_name
+            FROM bookings b
+            JOIN charge_points cp ON b.charge_point_id = cp.id
+            JOIN users u ON b.user_id = u.id
+            JOIN users h ON cp.user_id = h.id
+            WHERE b.created_at >= ?
+            ORDER BY b.created_at DESC
+        ");
+        $stmt->execute([$date]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     /**
