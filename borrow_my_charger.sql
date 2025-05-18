@@ -58,17 +58,17 @@ CREATE TABLE IF NOT EXISTS messages (
 
 -- Insert admin user
 INSERT INTO users (name, email, password, role, status) VALUES 
-('Admin User', 'admin@example.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'admin', 'approved');
+('User Lee Griffiths', 'admin@admin.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'admin', 'approved');
 -- Password: 123456
 
 -- Insert homeowner
 INSERT INTO users (name, email, password, role, status) VALUES 
-('Lee Griffiths', 'lee@example.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'homeowner', 'approved');
+('Lee Griffiths', 'lee@lee.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'homeowner', 'approved');
 -- Password: 123456
 
 -- Insert EV owner
 INSERT INTO users (name, email, password, role, status) VALUES 
-('John Doe', 'john@example.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'user', 'approved');
+('User Lee Griffiths', 'user@user.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'user', 'approved');
 -- Password: 123456
 
 -- Insert charge point
