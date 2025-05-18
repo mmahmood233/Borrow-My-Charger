@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_chargepoint'])) {
         $view->error = "Latitude and longitude must be valid numbers.";
     } else {
         // Handle image upload
-        $image = null;
+        $image = 'chargeimg'; // Default image if none is uploaded
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'uploads/';
             

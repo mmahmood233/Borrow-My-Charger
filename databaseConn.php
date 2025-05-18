@@ -11,6 +11,9 @@ $database = "db202200948"; // change this after to ur db name
 $username = "u202200948"; //same here
 $password = "u202200948"; //same here
 
+  
+
+
 try {
     $conn = new PDO("mysql:host=$serverName;dbname=$database;charset=utf8mb4", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

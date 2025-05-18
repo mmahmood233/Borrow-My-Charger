@@ -51,7 +51,11 @@
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <?php if ($chargePoint['image']): ?>
-                            <img src="uploads/<?php echo $chargePoint['image']; ?>" class="card-img-top" alt="Charge Point">
+                            <?php if ($chargePoint['image'] === 'chargeimg'): ?>
+                                <img src="images/chargeimg.png" class="card-img-top" alt="Charge Point">
+                            <?php else: ?>
+                                <img src="uploads/<?php echo $chargePoint['image']; ?>" class="card-img-top" alt="Charge Point">
+                            <?php endif; ?>
                         <?php else: ?>
                             <div class="card-img-top bg-light text-center p-4">
                                 <i class="fas fa-charging-station fa-3x"></i>
@@ -107,7 +111,11 @@
                             html += '<div class="card h-100">';
                             
                             if (chargePoint.image) {
-                                html += '<img src="uploads/' + chargePoint.image + '" class="card-img-top" alt="Charge Point">';
+                                if (chargePoint.image === 'chargeimg') {
+                                    html += '<img src="images/chargeimg.png" class="card-img-top" alt="Charge Point">';
+                                } else {
+                                    html += '<img src="uploads/' + chargePoint.image + '" class="card-img-top" alt="Charge Point">';
+                                }
                             } else {
                                 html += '<div class="card-img-top bg-light text-center p-4">';
                                 html += '<i class="fas fa-charging-station fa-3x"></i>';

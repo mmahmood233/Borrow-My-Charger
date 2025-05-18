@@ -16,7 +16,11 @@
             <!-- Charge point image card -->
             <div class="card border-0 shadow-sm rounded overflow-hidden mb-4">
                 <?php if (!empty($view->chargePoint['image'])): ?>
-                    <img src="uploads/<?php echo htmlspecialchars($view->chargePoint['image']); ?>" class="card-img-top" alt="Charge Point Image">
+                    <?php if ($view->chargePoint['image'] === 'chargeimg'): ?>
+                        <img src="images/chargeimg.png" class="card-img-top" alt="Charge Point Image">
+                    <?php else: ?>
+                        <img src="uploads/<?php echo htmlspecialchars($view->chargePoint['image']); ?>" class="card-img-top" alt="Charge Point Image">
+                    <?php endif; ?>
                 <?php else: ?>
                     <div class="card-img-top bg-light text-center p-5">
                         <i class="fas fa-charging-station fa-4x text-primary"></i>

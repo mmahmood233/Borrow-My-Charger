@@ -123,7 +123,11 @@
                 <div class="col-md-4 mb-4">
                     <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; overflow: hidden;">
                         <?php if (!empty($chargePoint['image'])): ?>
-                            <img src="uploads/<?php echo htmlspecialchars($chargePoint['image']); ?>" class="card-img-top" alt="Charge Point" style="height: 200px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x200?text=Charge+Point';this.onerror='';">
+                            <?php if ($chargePoint['image'] === 'chargeimg'): ?>
+                                <img src="images/chargeimg.png" class="card-img-top" alt="Charge Point" style="height: 200px; object-fit: cover;">
+                            <?php else: ?>
+                                <img src="uploads/<?php echo htmlspecialchars($chargePoint['image']); ?>" class="card-img-top" alt="Charge Point" style="height: 200px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x200?text=Charge+Point';this.onerror='';">
+                            <?php endif; ?>
                         <?php else: ?>
                             <img src="https://via.placeholder.com/300x200?text=Charge+Point" class="card-img-top" alt="Charge Point" style="height: 200px; object-fit: cover;">
                         <?php endif; ?>
