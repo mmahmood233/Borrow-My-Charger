@@ -14,9 +14,19 @@ if (!isset($_SESSION['user_id'])) {
 
 $contactModel = new Contact($conn);
 
-// Get message type (sent or received)
-$type = isset($_GET['type']) && $_GET['type'] === 'sent' ? 'sent' : 'received';
+// Set message type based on user role
+if ($_SESSION['user_role'] === 'homeowner') {
+    // Homeowners can only see received messages
+    $type = 'received';
+} else if ($_SESSION['user_role'] === 'user') {
+    // Regular users can only see sent messages
+    $type = 'sent';
+} else {
+    // Admin can see both, default to received
+    $type = isset($_GET['type']) && $_GET['type'] === 'sent' ? 'sent' : 'received';
+}
 $view->type = $type;
+$view->userRole = $_SESSION['user_role'];
 
 // Get messages
 $view->messages = $contactModel->getMessages($_SESSION['user_id'], $type);
