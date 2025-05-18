@@ -15,15 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_submit'])) {
     $email = sanitizeInput(trim($_POST['email']));
     $password = $_POST['password']; // Don't sanitize password as it will be hashed
     
-    // Verify reCAPTCHA
-    $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
-    $recaptcha_verified = false;
-    
-    if (!empty($recaptcha_response)) {
-        $verify_response = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$recaptcha_secret_key.'&response='.$recaptcha_response);
-        $response_data = json_decode($verify_response);
-        $recaptcha_verified = $response_data->success;
-    }
+    // Check if the robot checkbox was checked
+    $robot_check = isset($_POST['robot_check']) ? true : false;
+    $recaptcha_verified = $robot_check; // Only pass verification if checkbox was checked
 
     if (empty($email) || empty($password)) {
         $view->error = "Both fields are required.";

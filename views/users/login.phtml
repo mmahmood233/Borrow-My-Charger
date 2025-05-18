@@ -19,10 +19,14 @@
                     <input type="password" id="password" name="password" class="form-control" required>
                 </div>
                 
-                <!-- Google reCAPTCHA v2 -->
+                <!-- Simple custom robot check -->
                 <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="<?php echo $recaptcha_site_key; ?>"></div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="robot_check" name="robot_check" required>
+                        <label class="custom-control-label" for="robot_check">I am not a robot</label>
+                    </div>
                 </div>
+
                 
                 <div class="row">
                     <div class="col">

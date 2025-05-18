@@ -19,15 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_submit'])) {
     $confirm_password = $_POST['confirm_password']; // Don't sanitize password
     $role = sanitizeInput($_POST['role']);
     
-    // Verify reCAPTCHA
-    $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
-    $recaptcha_verified = false;
-    
-    if (!empty($recaptcha_response)) {
-        $verify_response = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$recaptcha_secret_key.'&response='.$recaptcha_response);
-        $response_data = json_decode($verify_response);
-        $recaptcha_verified = $response_data->success;
-    }
+    // Check if the robot checkbox was checked
+    $robot_check = isset($_POST['robot_check']) ? true : false;
+    $recaptcha_verified = $robot_check; // Only pass verification if checkbox was checked
 
     if (empty($name) || empty($email) || empty($password) || empty($confirm_password)) {
         $view->error = "All fields are required.";

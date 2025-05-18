@@ -1,10 +1,6 @@
 -- Borrow My Charger Database Script
 -- This script creates the database and tables for the Borrow My Charger application
 
--- Create database
-CREATE DATABASE IF NOT EXISTS borrow_my_charger;
-USE borrow_my_charger;
-
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -12,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('user', 'homeowner', 'admin') NOT NULL,
+    status ENUM('pending', 'approved', 'suspended') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -60,19 +57,19 @@ CREATE TABLE IF NOT EXISTS messages (
 -- Insert sample data
 
 -- Insert admin user
-INSERT INTO users (name, email, password, role) VALUES 
-('Admin User', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
--- Password: password
+INSERT INTO users (name, email, password, role, status) VALUES 
+('Admin User', 'admin@example.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'admin', 'approved');
+-- Password: 123456
 
 -- Insert homeowner
-INSERT INTO users (name, email, password, role) VALUES 
-('Lee Griffiths', 'lee@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'homeowner');
--- Password: password
+INSERT INTO users (name, email, password, role, status) VALUES 
+('Lee Griffiths', 'lee@example.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'homeowner', 'approved');
+-- Password: 123456
 
 -- Insert EV owner
-INSERT INTO users (name, email, password, role) VALUES 
-('John Doe', 'john@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user');
--- Password: password
+INSERT INTO users (name, email, password, role, status) VALUES 
+('John Doe', 'john@example.com', '$2y$10$mQ0.KjOJVYwcRUCQYdar1OQJ9UjlU7MJ1YPRH9iA/Yce7xTnn0oGO', 'user', 'approved');
+-- Password: 123456
 
 -- Insert charge point
 INSERT INTO charge_points (user_id, address, latitude, longitude, price, availability) 
