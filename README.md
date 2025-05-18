@@ -35,13 +35,6 @@ Borrow My Charger is a web application that connects electric vehicle (EV) owner
 - **Database**: MySQL
 - **Maps**: Google Maps API
 
-## Installation
-
-1. Clone the repository to your XAMPP htdocs folder
-2. Import the `borrow_my_charger.sql` file into your MySQL database
-3. Configure database connection in `databaseConn.php`
-4. Access the application via http://localhost/Borrow-My-Charger
-
 ## Default Users
 
 - **Admin**: admin@admin.com (Password: 123456)
@@ -55,4 +48,9 @@ The database includes sample data with:
 - 30 bookings with different statuses (approved, pending, declined)
 - 30 messages between users
 
+## Group Members
 
+- Mohamemd Taha 202200948
+- Ali Juma 202200673
+- Hussain Abdulnabi 202200487
+- Ali almuabad 202103500
